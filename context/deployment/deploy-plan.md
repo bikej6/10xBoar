@@ -111,6 +111,6 @@ tables (`auth.users` only). `ci.yml` triggers on push + PR to `master` (lint+bui
 
 ## Files touched
 - `wrangler.jsonc` — `name` → `boar`; added `kv_namespaces` (`SESSION`). *(done)*
-- `context/changes/deployment/deployment-plan.md` — this artifact.
+- `context/deployment/deploy-plan.md` — this artifact (canonical Plan Mode deploy output; relocated from `context/changes/deployment/deployment-plan.md`).
 - No source changes; no DB migrations (none exist, `auth.users` only).
 - `.github/workflows/ci.yml` — **unchanged** (lint+build only; deploy handled by Workers Builds).
