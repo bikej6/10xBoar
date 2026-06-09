@@ -51,43 +51,47 @@ tables (`auth.users` only). `ci.yml` triggers on push + PR to `master` (lint+bui
 
 ---
 
-## Phase 1 — GitHub repository (foundation for CD)
-> Cloudflare Workers Builds connects to this repo, so it must exist first. No commits yet (fresh repo on `master`).
-- [ ] Confirm secret hygiene: `.gitignore` excludes `.env`, `.env.production`, `.dev.vars`, `.wrangler/`, `node_modules/`, `dist/` (verified ✅). `.env.example` (placeholders only) is committed — fine.
-- [ ] Create the **initial commit** (everything except gitignored files).
-- [ ] Create an **empty private** repo on GitHub (no README/.gitignore/license → avoids merge conflict on first push).
-- [ ] `git remote add origin <url>` then `git push -u origin master` (first push may trigger Git Credential Manager browser login).
+## Phase 1 — GitHub repository (foundation for CD) ✅ DONE
+> Repo: `git@github.com:bikej6/10xBoar.git` (SSH). Branch `master`.
+- [x] Secret hygiene verified: `.gitignore` excludes `.env`, `.env.production`, `.dev.vars`, `.wrangler/`, `node_modules/`, `dist/`; **`.claude/` also excluded** (regenerable via 10x-cli). `.env.example` (placeholders) committed.
+- [x] Initial commit created (`f906163`, amended to drop `.claude/`).
+- [x] Pushed via SSH: `git push -u origin master` succeeded (`* [new branch] master -> master`).
 
-## Phase 2 — Bootstrap the Worker + runtime secrets (manual, interactive)
+## Phase 2 — Bootstrap the Worker + runtime secrets (manual, interactive) ✅ DONE
 > Creates the `boar` Worker and sets secrets *before* CD takes over, avoiding the secret-before-script chicken-egg. Secrets persist across all later auto-deploys.
-- [ ] `npx wrangler deploy` — interactive on first run: claim a **workers.dev subdomain** (one-time, account-wide). Returns `https://boar.<subdomain>.workers.dev`. (Auth won't work yet — expected.)
-- [ ] `npx wrangler secret put SUPABASE_URL` → paste `https://bbcaokucuzckmojgmeex.supabase.co`.
-- [ ] `npx wrangler secret put SUPABASE_KEY` → paste the `sb_publishable_…` key.
-- [ ] Do **not** set `OPENROUTER_API_KEY` (no AI code exists).
+> **Live URL:** `https://boar.boc-katarzyna.workers.dev` (subdomain `boc-katarzyna`, claimed via dashboard onboarding — CLI prompt is non-interactive here).
+- [x] `npx wrangler deploy` — subdomain claimed in dashboard (CLI prompt auto-answered "no" in non-interactive shell), then re-deployed. Live at `https://boar.boc-katarzyna.workers.dev`. Smoke test: **HTTP 200 text/html**.
+- [x] `SUPABASE_URL` set = `https://bbcaokucuzckmojgmeex.supabase.co`. ⚠️ Set via `echo -n "…" | npx wrangler secret put` (bash) — the bare `"str" | …` form runs the string as a *command* in bash → empty stdin → blank secret. Use `echo -n` (bash) or `Write-Output` (PowerShell).
+- [x] `SUPABASE_KEY` set = `sb_publishable_…` (publishable/public key). Both confirmed via `npx wrangler secret list`.
+- [x] `OPENROUTER_API_KEY` **not** set (no AI code exists). ✅
+> Secret *values* can't be read back (write-only); definitive proof is the Phase 7 auth smoke-test (a blank `SUPABASE_URL` would surface as `?error=Supabase is not configured`).
 
-## Phase 3 — Supabase auth configuration (manual, dashboard)
-- [ ] Auth → **Email → "Confirm email": OFF** (users sign in immediately; avoids rate-limited default SMTP).
-- [ ] Auth → URL Configuration → **Site URL** = `https://boar.<subdomain>.workers.dev`; add it to **Redirect URLs** too.
-- [ ] Note: PR **preview** URLs differ from production and use the **same** Supabase project + Worker secrets — test users on previews land in the real Supabase data (acceptable for MVP; be aware).
+## Phase 3 — Supabase auth configuration (manual, dashboard) ✅ DONE
+- [x] Auth → **Email → "Confirm email": OFF** (users sign in immediately; avoids rate-limited default SMTP).
+- [x] Auth → URL Configuration → **Site URL** = `https://boar.boc-katarzyna.workers.dev`; added to **Redirect URLs** too.
+- [x] Acknowledged: PR **preview** URLs use the **same** Supabase project (`bbcaokucuzckmojgmeex`) + Worker secrets + KV — test users on previews land in real Supabase data (accepted for MVP).
 
-## Phase 4 — Connect Cloudflare Workers Builds (the CD engine)
-- [ ] Dashboard → Workers & Pages → `boar` → **Settings → Build → Connect to Git**; install/authorize the **Cloudflare GitHub App** on the repo.
-- [ ] **Production branch:** `master`. **Build command:** `npm run build`. **Deploy command:** `npx wrangler deploy`. Root dir `/`.
+## Phase 4 — Connect Cloudflare Workers Builds (the CD engine) ✅ DONE
+- [x] Git already connected: `bikej6/10xBoar` linked to the `boar` Worker (Cloudflare GitHub App authorized).
+- [x] Build config **verified correct**: **Production branch** `master`, **Build command** `npm run build`, **Deploy command** `npx wrangler deploy` (NOT `pages deploy`), **Root dir** `/`.
+- [x] No build history yet — expected: Workers Builds only fires on a commit pushed *after* connection; the initial commit predates it. CD is **armed but unfired** — first firing is the Phase 7 PR test.
 - [ ] (Optional) add `SUPABASE_URL`/`SUPABASE_KEY` as **build** variables — not required (schema is `optional`, build succeeds without), only if a future build needs them.
-- [ ] From now on: push to `master` → production deploy; push to other branches / open PR → **preview deployment** with its own URL.
+- [x] Behavior now active: push to `master` → production deploy; push to other branches / open PR → **preview deployment** with its own URL.
 
-## Phase 5 — `gh` CLI for monitoring (currently NOT installed)
-- [ ] Install: `winget install --id GitHub.cli` (or from <https://cli.github.com>).
-- [ ] `gh auth login` → GitHub.com → HTTPS → browser.
-- [ ] Agent then uses (read-only): `gh pr status`, `gh pr checks` (incl. the Cloudflare build/deploy check), `gh pr view --comments` (Cloudflare posts the **preview URL** here), `gh run list/view` (the lint+build CI). For PRs: `gh pr create`.
+## Phase 5 — `gh` CLI for monitoring ✅ DONE
+- [x] Installed: `gh` **v2.93.0**.
+- [x] Authenticated as **bikej6** (HTTPS, scopes `gist, read:org, repo` — `repo` covers PR create/status/checks/view + run list/view).
+- [x] Reachability confirmed: `gh repo view bikej6/10xBoar` → default branch `master`, **visibility PUBLIC** (secrets gitignored per Phase 1; can flip to private later without affecting Cloudflare link). No open PRs.
+- [x] Agent then uses (read-only): `gh pr status`, `gh pr checks` (incl. the Cloudflare build/deploy check), `gh pr view --comments` (Cloudflare posts the **preview URL** here), `gh run list/view` (the lint+build CI). For PRs: `gh pr create`.
 
 ## Phase 6 — Branch protection + PR/preview workflow
-- [ ] GitHub → repo **Settings → Branches** (or Rules) → protect `master`: **require a PR before merging** + **require status checks to pass** (the `ci` lint+build check and the Cloudflare deploy check).
+- [x] **6a** — `master` protected via `gh api` (PUT branches/master/protection): **require a PR before merging** (`required_approving_review_count: 0` — solo dev can self-merge), `enforce_admins: false` (escape hatch during setup; tighten to `true` once proven), force-push + deletion blocked.
+- [ ] **6b** (after first PR) — add **require status checks to pass**, selecting the now-visible `ci` (lint+build) check + Cloudflare deploy check. Can't be set until those checks have run once on a PR (GitHub only lists checks it has seen).
 - [ ] Working loop from here: `git switch -c <feature>` → commit → push → `gh pr create` → wait for CI + Cloudflare preview → open the **preview URL**, verify → **merge** → Cloudflare auto-deploys `master` to production.
 
 ## Phase 7 — Verify end-to-end
-- [ ] Production smoke (`wrangler tail --format=json` in a second terminal): landing page renders; **signup** (`/auth/signup`) → with confirmation off the account is usable; **signin** → redirect to `/`; **/dashboard** loads when authed, redirects to `/auth/signin` after **signout**. No `?error=Supabase is not configured` (would mean secrets didn't load).
-- [ ] CD smoke: open a trivial PR → confirm a **Cloudflare preview URL** appears on the PR and loads → merge → confirm `master` auto-deploys and production reflects the change.
+- [x] **7a production auth smoke (via API, Origin header required — Astro `security.checkOrigin` 403s form POSTs without it):** `GET /`→200; `POST signup`→302 `/auth/confirm-email` (NOT "Supabase is not configured"); `POST signin`→302 `/` + cookie `sb-bbcaokucuzckmojgmeex-auth-token` (project ref in cookie name proves `SUPABASE_URL` is correct, not just present); `/dashboard`+cookie→200; `/dashboard` anon→302 `/auth/signin`. Confirmation-off confirmed (signin worked immediately). ⚠️ Test user `boar-smoke-1781023271708@example.com` created in Supabase — delete in Auth→Users if undesired.
+- [ ] **7b CD smoke:** open a trivial PR (the plan progress edits) → confirm a **Cloudflare preview URL** appears on the PR and loads → merge → confirm `master` auto-deploys and production reflects the change.
 
 ## Phase 8 — Operations / rollback
 - [ ] Rollback: `npx wrangler deployments list` → `npx wrangler rollback <deployment-id>` (code-only, <60s), or revert the commit on `master` (re-triggers a clean deploy). Neither reverts Supabase/dashboard changes.
