@@ -86,12 +86,12 @@ tables (`auth.users` only). `ci.yml` triggers on push + PR to `master` (lint+bui
 
 ## Phase 6 — Branch protection + PR/preview workflow
 - [x] **6a** — `master` protected via `gh api` (PUT branches/master/protection): **require a PR before merging** (`required_approving_review_count: 0` — solo dev can self-merge), `enforce_admins: false` (escape hatch during setup; tighten to `true` once proven), force-push + deletion blocked.
-- [ ] **6b** (after first PR) — add **require status checks to pass**, selecting the now-visible `ci` (lint+build) check + Cloudflare deploy check. Can't be set until those checks have run once on a PR (GitHub only lists checks it has seen).
+- [x] **6b** — required status checks added via `gh api`: **`ci`** (app 15368) + **`Workers Builds: boar`** (app 85455), `strict: false` (no forced rebase for solo dev). Both must pass before merge. Set after PR #1 made the checks visible to GitHub.
 - [ ] Working loop from here: `git switch -c <feature>` → commit → push → `gh pr create` → wait for CI + Cloudflare preview → open the **preview URL**, verify → **merge** → Cloudflare auto-deploys `master` to production.
 
 ## Phase 7 — Verify end-to-end
 - [x] **7a production auth smoke (via API, Origin header required — Astro `security.checkOrigin` 403s form POSTs without it):** `GET /`→200; `POST signup`→302 `/auth/confirm-email` (NOT "Supabase is not configured"); `POST signin`→302 `/` + cookie `sb-bbcaokucuzckmojgmeex-auth-token` (project ref in cookie name proves `SUPABASE_URL` is correct, not just present); `/dashboard`+cookie→200; `/dashboard` anon→302 `/auth/signin`. Confirmation-off confirmed (signin worked immediately). ⚠️ Test user `boar-smoke-1781023271708@example.com` created in Supabase — delete in Auth→Users if undesired.
-- [ ] **7b CD smoke:** open a trivial PR (the plan progress edits) → confirm a **Cloudflare preview URL** appears on the PR and loads → merge → confirm `master` auto-deploys and production reflects the change.
+- [x] **7b CD smoke (PR #1):** branch → commit → push → `gh pr create`. Both checks passed (`ci` 47s, `Workers Builds: boar`). Cloudflare posted preview URLs (`https://b39f60e7-boar.boc-katarzyna.workers.dev`, branch alias) — both HTTP 200. **Merged** (human gate) → production auto-deployed (version `1a21f8e3` @ 16:47Z, zero manual `wrangler deploy`) → `GET /` 200. Full loop branch→PR→preview→merge→prod proven.
 
 ## Phase 8 — Operations / rollback
 - [ ] Rollback: `npx wrangler deployments list` → `npx wrangler rollback <deployment-id>` (code-only, <60s), or revert the commit on `master` (re-triggers a clean deploy). Neither reverts Supabase/dashboard changes.
