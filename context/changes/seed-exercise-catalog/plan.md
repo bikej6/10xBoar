@@ -210,13 +210,13 @@ Negligible. The catalog is a tiny static dataset (6 groups, a few dozen exercise
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npm run build` / `npx astro check` (0 errors)
-- [x] 2.2 Lint passes: `npm run lint` (catalog.ts ESLint-clean; pre-existing repo-wide CRLF errors out of scope)
-- [x] 2.3 Helper compiles against the seeded schema with catalog types
+- [x] 2.1 Type checking passes: `npm run build` / `npx astro check` (0 errors) — 4a1b9b8
+- [x] 2.2 Lint passes: `npm run lint` (catalog.ts ESLint-clean; pre-existing repo-wide CRLF errors out of scope) — 4a1b9b8
+- [x] 2.3 Helper compiles against the seeded schema with catalog types — 4a1b9b8
 
 #### Manual
 
-- [x] 2.4 `getMuscleGroups` returns the 6 seeded groups
-- [x] 2.5 `getExercises` filters by slug; no slug returns the full catalog
-- [x] 2.6 Null Supabase client yields an empty/typed result instead of throwing
-- [x] 2.7 `docs/reference/contract-surfaces.md` lists the catalog names accurately
+- [x] 2.4 `getMuscleGroups` returns the 6 seeded groups — 4a1b9b8
+- [x] 2.5 `getExercises` filters by slug; no slug returns the full catalog — 4a1b9b8
+- [x] 2.6 Null Supabase client yields an empty/typed result instead of throwing — 4a1b9b8
+- [x] 2.7 `docs/reference/contract-surfaces.md` lists the catalog names accurately — 4a1b9b8
