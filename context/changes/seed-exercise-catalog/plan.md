@@ -194,29 +194,29 @@ Negligible. The catalog is a tiny static dataset (6 groups, a few dozen exercise
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly on a fresh DB: `npx supabase db reset`
-- [x] 1.2 Muscle groups seeded: `select count(*) from muscle_groups;` returns 6
-- [x] 1.3 Exercises seeded and all reference a valid group (no orphan FKs)
-- [x] 1.4 Lint passes: `npm run lint` (lint-neutral for this change; pre-existing repo-wide CRLF errors out of scope)
+- [x] 1.1 Migration applies cleanly on a fresh DB: `npx supabase db reset` — 7a9bcca
+- [x] 1.2 Muscle groups seeded: `select count(*) from muscle_groups;` returns 6 — 7a9bcca
+- [x] 1.3 Exercises seeded and all reference a valid group (no orphan FKs) — 7a9bcca
+- [x] 1.4 Lint passes: `npm run lint` (lint-neutral for this change; pre-existing repo-wide CRLF errors out of scope) — 7a9bcca
 
 #### Manual
 
-- [x] 1.5 Both tables show RLS enabled with a single SELECT policy and no write policies (Studio)
-- [x] 1.6 Client insert is rejected by RLS
-- [x] 1.7 Polish display names correct; slugs are stable lowercase machine keys
-- [x] 1.8 Exercise distribution per group is reasonable (no empty/oversized groups)
+- [x] 1.5 Both tables show RLS enabled with a single SELECT policy and no write policies (Studio) — 7a9bcca
+- [x] 1.6 Client insert is rejected by RLS — 7a9bcca
+- [x] 1.7 Polish display names correct; slugs are stable lowercase machine keys — 7a9bcca
+- [x] 1.8 Exercise distribution per group is reasonable (no empty/oversized groups) — 7a9bcca
 
 ### Phase 2: Typed catalog query helper
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npm run build` / `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Helper compiles against the seeded schema with catalog types
+- [x] 2.1 Type checking passes: `npm run build` / `npx astro check` (0 errors)
+- [x] 2.2 Lint passes: `npm run lint` (catalog.ts ESLint-clean; pre-existing repo-wide CRLF errors out of scope)
+- [x] 2.3 Helper compiles against the seeded schema with catalog types
 
 #### Manual
 
-- [ ] 2.4 `getMuscleGroups` returns the 6 seeded groups
-- [ ] 2.5 `getExercises` filters by slug; no slug returns the full catalog
-- [ ] 2.6 Null Supabase client yields an empty/typed result instead of throwing
-- [ ] 2.7 `docs/reference/contract-surfaces.md` lists the catalog names accurately
+- [x] 2.4 `getMuscleGroups` returns the 6 seeded groups
+- [x] 2.5 `getExercises` filters by slug; no slug returns the full catalog
+- [x] 2.6 Null Supabase client yields an empty/typed result instead of throwing
+- [x] 2.7 `docs/reference/contract-surfaces.md` lists the catalog names accurately
