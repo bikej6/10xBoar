@@ -394,9 +394,9 @@ Negligible at `target_scale: small`. Per-user row counts are tiny; the `(user_id
 
 #### Manual
 
-- [x] 2.4 `createWorkout` persists parent + child rows for a valid user — verified via Phase 3/4 logging flow
+- [x] 2.4 `createWorkout` persists parent + child rows for a valid user — verified via Phase 3/4 logging flow — b76a585
 - [ ] 2.5 Simulated child-insert failure leaves no orphaned parent (atomicity)
-- [x] 2.6 `getRecentWorkouts` returns only the caller's workouts, newest first, names resolved — verified via Phase 4 recent list
+- [x] 2.6 `getRecentWorkouts` returns only the caller's workouts, newest first, names resolved — verified via Phase 4 recent list — b76a585
 - [ ] 2.7 Null Supabase client yields `{ ok: false }` / `[]` instead of throwing
 
 ### Phase 3: Logging write path + page (core)
@@ -419,13 +419,13 @@ Negligible at `target_scale: small`. Per-user row counts are tiny; the `(user_id
 
 #### Automated
 
-- [x] 4.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
-- [x] 4.2 Lint passes on changed files (no new errors)
+- [x] 4.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors) — b76a585
+- [x] 4.2 Lint passes on changed files (no new errors) — b76a585
 
 #### Manual
 
-- [x] 4.3 Multiple exercise rows save as one `workouts` row with matching `workout_exercises`
-- [x] 4.4 Removed rows are excluded; an all-empty submit is rejected with a clear message
-- [x] 4.5 Recent-workouts list shows saved sessions newest-first, grouped by date, with correct names/sets/weights
-- [x] 4.6 Persistence across logout/login holds; second user does not see the first user's workouts (isolation)
-- [x] 4.7 A representative multi-exercise session logs in under a minute
+- [x] 4.3 Multiple exercise rows save as one `workouts` row with matching `workout_exercises` — b76a585
+- [x] 4.4 Removed rows are excluded; an all-empty submit is rejected with a clear message — b76a585
+- [x] 4.5 Recent-workouts list shows saved sessions newest-first, grouped by date, with correct names/sets/weights — b76a585
+- [x] 4.6 Persistence across logout/login holds; second user does not see the first user's workouts (isolation) — b76a585
+- [x] 4.7 A representative multi-exercise session logs in under a minute — b76a585
