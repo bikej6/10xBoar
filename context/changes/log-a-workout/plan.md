@@ -394,38 +394,38 @@ Negligible at `target_scale: small`. Per-user row counts are tiny; the `(user_id
 
 #### Manual
 
-- [ ] 2.4 `createWorkout` persists parent + child rows for a valid user
+- [x] 2.4 `createWorkout` persists parent + child rows for a valid user — verified via Phase 3/4 logging flow
 - [ ] 2.5 Simulated child-insert failure leaves no orphaned parent (atomicity)
-- [ ] 2.6 `getRecentWorkouts` returns only the caller's workouts, newest first, names resolved
+- [x] 2.6 `getRecentWorkouts` returns only the caller's workouts, newest first, names resolved — verified via Phase 4 recent list
 - [ ] 2.7 Null Supabase client yields `{ ok: false }` / `[]` instead of throwing
 
 ### Phase 3: Logging write path + page (core)
 
 #### Automated
 
-- [x] 3.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
-- [x] 3.2 Lint passes on changed files (no new errors)
-- [x] 3.3 `/workouts` is in `PROTECTED_ROUTES` (signed-out request redirects to `/auth/signin`)
+- [x] 3.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors) — 7cd292c
+- [x] 3.2 Lint passes on changed files (no new errors) — 7cd292c
+- [x] 3.3 `/workouts` is in `PROTECTED_ROUTES` (signed-out request redirects to `/auth/signin`) — 7cd292c
 
 #### Manual
 
-- [x] 3.4 `/workouts` shows the form; muscle-group filter populates exercises correctly
-- [x] 3.5 Saving one exercise persists `workouts` + `workout_exercises` for the user and shows confirmation
-- [x] 3.6 Future `workout_date` is rejected with a visible error
-- [x] 3.7 Signed out, `/workouts` redirects to `/auth/signin`
-- [x] 3.8 Logging one exercise completes within a minute
+- [x] 3.4 `/workouts` shows the form; muscle-group filter populates exercises correctly — 7cd292c
+- [x] 3.5 Saving one exercise persists `workouts` + `workout_exercises` for the user and shows confirmation — 7cd292c
+- [x] 3.6 Future `workout_date` is rejected with a visible error — 7cd292c
+- [x] 3.7 Signed out, `/workouts` redirects to `/auth/signin` — 7cd292c
+- [x] 3.8 Logging one exercise completes within a minute — 7cd292c
 
 ### Phase 4: <1-min UX completion (multi-exercise + recent list)
 
 #### Automated
 
-- [ ] 4.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
-- [ ] 4.2 Lint passes on changed files (no new errors)
+- [x] 4.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
+- [x] 4.2 Lint passes on changed files (no new errors)
 
 #### Manual
 
-- [ ] 4.3 Multiple exercise rows save as one `workouts` row with matching `workout_exercises`
-- [ ] 4.4 Removed rows are excluded; an all-empty submit is rejected with a clear message
-- [ ] 4.5 Recent-workouts list shows saved sessions newest-first, grouped by date, with correct names/sets/weights
-- [ ] 4.6 Persistence across logout/login holds; second user does not see the first user's workouts (isolation)
-- [ ] 4.7 A representative multi-exercise session logs in under a minute
+- [x] 4.3 Multiple exercise rows save as one `workouts` row with matching `workout_exercises`
+- [x] 4.4 Removed rows are excluded; an all-empty submit is rejected with a clear message
+- [x] 4.5 Recent-workouts list shows saved sessions newest-first, grouped by date, with correct names/sets/weights
+- [x] 4.6 Persistence across logout/login holds; second user does not see the first user's workouts (isolation)
+- [x] 4.7 A representative multi-exercise session logs in under a minute

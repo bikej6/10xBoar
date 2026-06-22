@@ -31,6 +31,29 @@ function redirectError(context: Parameters<APIRoute>[0], message: string) {
   return context.redirect(`/workouts?error=${encodeURIComponent(message)}`);
 }
 
+/** Validate one submitted exercise row into a typed input, or an error string. */
+function parseExerciseRow(item: unknown): WorkoutExerciseInput | string {
+  const row = (item ?? {}) as Record<string, unknown>;
+  const exerciseId = Number(row.exerciseId);
+  const sets = Number(row.sets);
+  const reps = Number(row.reps);
+  const weight = Number(row.weight);
+
+  if (!Number.isInteger(exerciseId) || exerciseId <= 0) {
+    return "Choose an exercise for every row.";
+  }
+  if (!Number.isInteger(sets) || sets < 1) {
+    return "Sets must be a whole number of at least 1.";
+  }
+  if (!Number.isInteger(reps) || reps < 1) {
+    return "Reps must be a whole number of at least 1.";
+  }
+  if (!Number.isFinite(weight) || weight < 0) {
+    return "Weight must be zero or more.";
+  }
+  return { exerciseId, sets, reps, weight };
+}
+
 export const POST: APIRoute = async (context) => {
   const form = await context.request.formData();
 
@@ -44,30 +67,31 @@ export const POST: APIRoute = async (context) => {
     return context.redirect("/auth/signin");
   }
 
-  const exerciseId = Number(form.get("exercise_id"));
-  const sets = Number(form.get("sets"));
-  const reps = Number(form.get("reps"));
-  const weight = Number(form.get("weight"));
   const rawDate = (form.get("workout_date") as string | null)?.trim();
   const workoutDate = rawDate && rawDate.length > 0 ? rawDate : todayUtcIso();
 
-  if (!Number.isInteger(exerciseId) || exerciseId <= 0) {
-    return redirectError(context, "Choose an exercise.");
-  }
-  if (!Number.isInteger(sets) || sets < 1) {
-    return redirectError(context, "Sets must be a whole number of at least 1.");
-  }
-  if (!Number.isInteger(reps) || reps < 1) {
-    return redirectError(context, "Reps must be a whole number of at least 1.");
-  }
-  if (!Number.isFinite(weight) || weight < 0) {
-    return redirectError(context, "Weight must be zero or more.");
-  }
   if (!isAcceptableDate(workoutDate)) {
     return redirectError(context, "Pick a date that is not in the future.");
   }
 
-  const exercises: WorkoutExerciseInput[] = [{ exerciseId, sets, reps, weight }];
+  let parsedRows: unknown;
+  try {
+    parsedRows = JSON.parse((form.get("exercises") as string | null) ?? "[]");
+  } catch {
+    return redirectError(context, "Could not read the submitted exercises.");
+  }
+  if (!Array.isArray(parsedRows) || parsedRows.length === 0) {
+    return redirectError(context, "Add at least one exercise.");
+  }
+
+  const exercises: WorkoutExerciseInput[] = [];
+  for (const item of parsedRows) {
+    const parsed = parseExerciseRow(item);
+    if (typeof parsed === "string") {
+      return redirectError(context, parsed);
+    }
+    exercises.push(parsed);
+  }
 
   const result = await createWorkout(supabase, { userId: user.id, workoutDate, exercises });
   if (!result.ok) {
