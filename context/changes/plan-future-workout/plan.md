@@ -271,25 +271,25 @@ One additive migration (partial unique index). Apply via `db push` (PAT), verify
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly via `db push`
-- [x] 1.2 `npm run build` passes
+- [x] 1.1 Migration applies cleanly via `db push` — 331b5ac
+- [x] 1.2 `npm run build` passes — 331b5ac
 
 #### Manual
 
-- [x] 1.3 Partial unique index exists (`WHERE status = 'planned'`), confirmed via Management API
-- [x] 1.4 Second same-date `planned` insert fails; two `logged` rows for one date still succeed
+- [x] 1.3 Partial unique index exists (`WHERE status = 'planned'`), confirmed via Management API — 331b5ac
+- [x] 1.4 Second same-date `planned` insert fails; two `logged` rows for one date still succeed — 331b5ac
 
 ### Phase 2: Data layer — status-aware write + planned read
 
 #### Automated
 
-- [ ] 2.1 Type checking / `npm run build` passes (signatures backward-compatible)
-- [ ] 2.2 Lint shows no new errors
+- [x] 2.1 Type checking / `npm run build` passes (signatures backward-compatible)
+- [x] 2.2 Lint shows no new errors
 
 #### Manual
 
-- [ ] 2.3 `createWorkout` writes `planned`; duplicate same-date returns the friendly message
-- [ ] 2.4 `getPlannedWorkouts` returns planned-only soonest-first; `getRecentWorkouts(..., 'logged')` excludes planned
+- [x] 2.3 `createWorkout` writes `planned`; duplicate same-date returns the friendly message
+- [x] 2.4 `getPlannedWorkouts` returns planned-only soonest-first; `getRecentWorkouts(..., 'logged')` excludes planned
 
 ### Phase 3: Entry path — plan-mode toggle + API route
 

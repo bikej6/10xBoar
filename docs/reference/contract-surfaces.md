@@ -55,26 +55,45 @@ first private-per-user schema and the RLS precedent (per-user policies keyed to
   `for all` policy for `authenticated` authorizing rows where an `EXISTS` on
   `workouts w` confirms `w.id = workout_id and w.user_id = auth.uid()`.
 
+### Indexes (uniqueness guard)
+
+- `workouts_one_planned_per_day_idx` — **partial unique** index on
+  `(user_id, workout_date) WHERE status = 'planned'` (S-02,
+  `supabase/migrations/20260622140500_unique_planned_per_day.sql`). Guarantees at
+  most one `planned` workout per user per date. Scoped to planned rows only, so
+  logged history is unaffected (a user may log and plan the same date, and keep
+  multiple logged rows for one date). A duplicate `planned` insert raises
+  Postgres unique-violation `23505`.
+
 ### `status` value set
 
-`logged` | `planned`. S-01 only ever writes `logged`; **S-02 introduces
-`planned`** (manual planning). The column ships now so S-02 is additive.
+`logged` | `planned` (type `WorkoutStatus` in `src/lib/workouts.ts`). S-01 only
+ever writes `logged`; **S-02 introduces `planned`** (manual planning). The column
+ships now so S-02 is additive.
 
 ### Query helper — `src/lib/workouts.ts`
 
 Typed write/read access for the logging UI and its API route — neither queries
 Supabase ad hoc.
 
-- `createWorkout(supabase, { userId, workoutDate, exercises }): Promise<{ ok: true; id: number } | { ok: false; error: string }>`
-  — inserts the parent `workouts` row (status `logged`), then its
-  `workout_exercises`; on child-insert failure deletes the just-created parent
-  (best-effort cleanup, per F1 — not crash-atomic). `userId` is set server-side;
-  never throws.
-- `getRecentWorkouts(supabase, userId, limit?): Promise<LoggedWorkout[]>` — the
-  caller's workouts ordered by `workout_date` desc then `created_at` desc, with
-  their exercises and resolved catalog names. Default `limit` 10.
-- Types: `WorkoutExerciseInput { exerciseId, sets, reps, weight }`,
+- `createWorkout(supabase, { userId, workoutDate, exercises, status? }): Promise<{ ok: true; id: number } | { ok: false; error: string }>`
+  — inserts the parent `workouts` row, then its `workout_exercises`; on
+  child-insert failure deletes the just-created parent (best-effort cleanup, per
+  F1 — not crash-atomic). `status` defaults to `logged`; pass `planned` (S-02) to
+  create a future plan. A duplicate-`planned`-per-day insert (`23505`) returns
+  `{ ok: false, error: "You already have a plan for that day." }`. `userId` is set
+  server-side; never throws. **S-03 reuses this as `createWorkout(..., { status: 'planned' })`** for proposal acceptance.
+- `getRecentWorkouts(supabase, userId, limit?, status?): Promise<LoggedWorkout[]>`
+  — the caller's workouts ordered by `workout_date` desc then `created_at` desc,
+  with their exercises and resolved catalog names. Optional `status` restricts to
+  one kind (the `/workouts` page passes `"logged"` to exclude planned rows);
+  omitted returns all statuses. Default `limit` 10.
+- `getPlannedWorkouts(supabase, userId, limit?): Promise<LoggedWorkout[]>` — the
+  caller's `planned` workouts ordered **ascending** (`workout_date` asc then
+  `created_at` asc — soonest upcoming first). Default `limit` 10.
+- Types: `WorkoutStatus = "logged" | "planned"`,
+  `WorkoutExerciseInput { exerciseId, sets, reps, weight }`,
   `LoggedWorkout { id, workoutDate, status, exercises: Array<{ exerciseId, exerciseName, sets, reps, weight }> }`.
-- Both accept the per-request client from `createClient` (`src/lib/supabase.ts`)
+- All accept the per-request client from `createClient` (`src/lib/supabase.ts`)
   and return a null-safe result (`{ ok: false }` / `[]`) when it is `null`,
   matching `catalog.ts`.
