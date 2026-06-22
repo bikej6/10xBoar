@@ -3,7 +3,7 @@ project: "10xBoar"
 version: 1
 status: draft
 created: 2026-06-14
-updated: 2026-06-19
+updated: 2026-06-22
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -34,6 +34,8 @@ top_blocker: time
 | S-02 | plan-future-workout      | ręcznie zaplanować trening na przyszły dzień                             | F-01, S-01       | FR-004                | proposed |
 | S-03 | history-based-proposal   | dostać propozycję treningu z własnej historii i przyjąć ją jako plan     | F-01, S-01, S-02 | US-01, FR-005         | blocked  |
 | S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | proposed |
+| S-05 | workout-calendar         | zobaczyć kalendarz z dniami treningowymi i szczegóły treningu po kliknięciu dnia | S-01     | FR-003 (odczyt) · nowy | proposed |
+| S-06 | edit-workout             | edytować zapisany trening (z widoku szczegółów)                          | S-01, S-05       | nowy (rozszerza zakres) | proposed |
 
 ## Streams
 
@@ -43,6 +45,7 @@ Pomoc nawigacyjna — grupuje elementy dzielące łańcuch warunków wstępnych.
 | ------ | ------------------------------ | -------------------------------------- | ------------------------------------------------------------------ |
 | A      | Rdzeń: rejestracja → propozycja | `F-01` → `S-01` → `S-02` → `S-03`     | Ścieżka krytyczna do gwiazdy przewodniej; zgodna z celem `speed`.  |
 | B      | Wgląd w postępy                | `S-04`                                 | Odgałęzia się od Stream A na `S-01`; równoległy do S-02/S-03.       |
+| C      | Historia i edycja              | `S-01` → `S-05` → `S-06`               | Odgałęzia się od Stream A na `S-01`; drugorzędny, poza ścieżką krytyczną. |
 
 ## Baseline
 
@@ -124,6 +127,34 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **Risk:** Widok tylko-do-odczytu nad tą samą historią; niezależny od propozycji, więc może iść równolegle. Sekwencjonowany po S-01, bo bez historii nie ma czego wykreślać. Ryzyko: niskie — wartość drugorzędna, nie blokuje ścieżki krytycznej.
 - **Status:** proposed
 
+### S-05: Kalendarz historii treningów
+
+- **Outcome:** użytkownik widzi kalendarz z oznaczonymi dniami, w których ma zapisany trening, i po kliknięciu dnia widzi szczegóły treningu (ćwiczenia + serie + powtórzenia + ciężar). Tylko do odczytu.
+- **Change ID:** workout-calendar
+- **PRD refs:** FR-003 (odczyt zapisanej historii) — brak dedykowanego FR dla widoku kalendarza; do potwierdzenia przy planowaniu.
+- **Prerequisites:** S-01 (zapisana historia + schemat `workouts`/`workout_exercises`, helper `getRecentWorkouts`)
+- **Parallel with:** S-02, S-03, S-04
+- **Blockers:** —
+- **Unknowns:**
+  - Zakres widoku (miesiąc vs tydzień) i sposób oznaczania dni z treningiem. — Owner: user. Block: no.
+  - Strefa czasowa dla przypisania treningu do dnia (UTC zegara Workers vs lokalny dzień użytkownika — patrz F2 z S-01). — Owner: user. Block: no.
+- **Risk:** Widok tylko-do-odczytu nad historią z S-01; niezależny od ścieżki krytycznej (jak S-04), może iść równolegle. Ryzyko niskie. Reużywa helpera odczytu z S-01 zamiast odpytywać Supabase ad hoc.
+- **Status:** proposed
+
+### S-06: Edycja treningu
+
+- **Outcome:** użytkownik może edytować zapisany trening (ćwiczenia / serie / powtórzenia / ciężar / data) z widoku szczegółów dnia.
+- **Change ID:** edit-workout
+- **PRD refs:** brak — **rozszerza zakres poza pierwotny Non-Goal S-01** ("brak edycji/usuwania treningów"); wymaga potwierdzenia w PRD przed implementacją.
+- **Prerequisites:** S-01 (schemat + dane), S-05 (wejście w edycję z widoku szczegółów)
+- **Parallel with:** —
+- **Blockers:** —
+- **Unknowns:**
+  - Czy edycja obejmuje także usuwanie treningu/ćwiczenia? — Owner: user. Block: no.
+  - Czy zmiana daty treningu jest dozwolona (i czy nadal obowiązuje reguła "nie w przyszłości")? — Owner: user. Block: no.
+- **Risk:** Odwraca decyzję S-01 (brak edycji). Wymaga **nowej migracji: polityka RLS UPDATE na `workouts`** keyed to `auth.uid()` (dziś istnieją tylko SELECT/INSERT/DELETE), a edycja wierszy ćwiczeń idzie przez własność tranzytywną (`workout_exercises` ma już politykę `for all`). Ryzyko: spójność przy edycji wielu dzieci (insert/update/delete ćwiczeń w jednej sesji) — bez transakcji po stronie PostgREST, jak w F1 z S-01.
+- **Status:** proposed
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                | Suggested issue title                              | Ready for `/10x-plan` | Notes |
@@ -133,6 +164,8 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 | S-02       | plan-future-workout      | Ręczne planowanie treningu na przyszły dzień       | no                    | Wymaga F-01, S-01 |
 | S-03       | history-based-proposal   | Propozycja treningu z własnej historii (gwiazda)   | no                    | Zablokowana: minimalna historia (Otwarte pytanie) |
 | S-04       | weight-progress-stats    | Statystyki progresu ciężaru per ćwiczenie          | no                    | Wymaga S-01 |
+| S-05       | workout-calendar         | Kalendarz historii treningów z podglądem dnia      | no                    | Wymaga S-01 (po merge) |
+| S-06       | edit-workout             | Edycja zapisanego treningu                         | no                    | Wymaga S-01, S-05; rozszerza zakres PRD (potwierdzić) |
 
 ## Open Roadmap Questions
 
