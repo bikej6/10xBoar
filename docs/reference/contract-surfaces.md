@@ -60,5 +60,19 @@ first private-per-user schema and the RLS precedent (per-user policies keyed to
 
 ### Query helper — `src/lib/workouts.ts`
 
-Typed write/read access (added in Phase 2). Forward reference — signatures
-filled in when the helper lands.
+Typed write/read access for the logging UI and its API route — neither queries
+Supabase ad hoc.
+
+- `createWorkout(supabase, { userId, workoutDate, exercises }): Promise<{ ok: true; id: number } | { ok: false; error: string }>`
+  — inserts the parent `workouts` row (status `logged`), then its
+  `workout_exercises`; on child-insert failure deletes the just-created parent
+  (best-effort cleanup, per F1 — not crash-atomic). `userId` is set server-side;
+  never throws.
+- `getRecentWorkouts(supabase, userId, limit?): Promise<LoggedWorkout[]>` — the
+  caller's workouts ordered by `workout_date` desc then `created_at` desc, with
+  their exercises and resolved catalog names. Default `limit` 10.
+- Types: `WorkoutExerciseInput { exerciseId, sets, weight }`,
+  `LoggedWorkout { id, workoutDate, status, exercises: Array<{ exerciseId, exerciseName, sets, weight }> }`.
+- Both accept the per-request client from `createClient` (`src/lib/supabase.ts`)
+  and return a null-safe result (`{ ok: false }` / `[]`) when it is `null`,
+  matching `catalog.ts`.

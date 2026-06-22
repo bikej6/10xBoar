@@ -360,27 +360,27 @@ Negligible at `target_scale: small`. Per-user row counts are tiny; the `(user_id
 
 #### Automated
 
-- [x] 1.1 Migration applies to the cloud project: `npx supabase db push` succeeds
-- [x] 1.2 Both tables exist with RLS enabled (`pg_class.relrowsecurity = true` for both)
-- [x] 1.3 Expected per-user policies exist (`pg_policies` for both tables)
-- [x] 1.4 `workout_exercises.exercise_id` FK resolves to `exercises.id` (no apply error)
-- [x] 1.5 Lint passes on changed files (no new errors)
+- [x] 1.1 Migration applies to the cloud project: `npx supabase db push` succeeds — bffc96d
+- [x] 1.2 Both tables exist with RLS enabled (`pg_class.relrowsecurity = true` for both) — bffc96d
+- [x] 1.3 Expected per-user policies exist (`pg_policies` for both tables) — bffc96d
+- [x] 1.4 `workout_exercises.exercise_id` FK resolves to `exercises.id` (no apply error) — bffc96d
+- [x] 1.5 Lint passes on changed files (no new errors) — bffc96d
 
 #### Manual
 
-- [ ] 1.6 Studio shows RLS enabled with per-user policies and no anon/public access
-- [ ] 1.7 Insert with a foreign `user_id` is rejected by `with check`
-- [ ] 1.8 `workout_exercises` row pointing at another user's `workout_id` is rejected
-- [ ] 1.9 `status` defaults to `logged`; child FK cascades on parent delete
-- [ ] 1.10 A user can DELETE only their own workout (cleanup path); deleting another user's is rejected
+- [x] 1.6 Studio shows RLS enabled with per-user policies and no anon/public access
+- [x] 1.7 Insert with a foreign `user_id` is rejected by `with check`
+- [x] 1.8 `workout_exercises` row pointing at another user's `workout_id` is rejected
+- [x] 1.9 `status` defaults to `logged`; child FK cascades on parent delete
+- [x] 1.10 A user can DELETE only their own workout (cleanup path); deleting another user's is rejected
 
 ### Phase 2: Typed workout data layer
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
-- [ ] 2.2 Lint passes on `src/lib/workouts.ts` (no new errors)
-- [ ] 2.3 Helper compiles against the Phase 1 schema
+- [x] 2.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
+- [x] 2.2 Lint passes on `src/lib/workouts.ts` (no new errors)
+- [x] 2.3 Helper compiles against the Phase 1 schema
 
 #### Manual
 
