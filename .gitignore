@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# supabase CLI credentials (PAT + DB password) — local only, never commit
+.supabase-cli.env
+
 # cloudflare
 .dev.vars
 .wrangler/

@@ -17,6 +17,7 @@ interface FormFieldProps {
   hint?: ReactNode;
   icon: ReactNode;
   endContent?: ReactNode;
+  min?: number | string;
 }
 
 export function FormField({
@@ -31,6 +32,7 @@ export function FormField({
   hint,
   icon,
   endContent,
+  min,
 }: FormFieldProps) {
   return (
     <div>
@@ -43,6 +45,7 @@ export function FormField({
           id={id}
           name={name ?? id}
           type={type}
+          min={min}
           value={value}
           onChange={(e) => {
             onChange(e.target.value);
