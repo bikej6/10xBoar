@@ -48,8 +48,10 @@ first private-per-user schema and the RLS precedent (per-user policies keyed to
   failure), **not** an end-user delete feature.
 - `workout_exercises` — columns: `id` (PK), `workout_id` (FK → `workouts.id`,
   `on delete cascade`), `exercise_id` (bigint, FK → `exercises.id`), `sets`
-  (integer, `> 0`), `weight` (numeric, `>= 0`). Index on `workout_id`. No
-  `user_id` — ownership is **transitive** via the parent workout. RLS: a single
+  (integer, `> 0`), `reps` (integer, `> 0` — repetitions per set; one value for
+  all sets, added by the 2026-06-22 reps scope amendment), `weight` (numeric,
+  `>= 0`). Index on `workout_id`. No `user_id` — ownership is **transitive** via
+  the parent workout. RLS: a single
   `for all` policy for `authenticated` authorizing rows where an `EXISTS` on
   `workouts w` confirms `w.id = workout_id and w.user_id = auth.uid()`.
 
@@ -71,8 +73,8 @@ Supabase ad hoc.
 - `getRecentWorkouts(supabase, userId, limit?): Promise<LoggedWorkout[]>` — the
   caller's workouts ordered by `workout_date` desc then `created_at` desc, with
   their exercises and resolved catalog names. Default `limit` 10.
-- Types: `WorkoutExerciseInput { exerciseId, sets, weight }`,
-  `LoggedWorkout { id, workoutDate, status, exercises: Array<{ exerciseId, exerciseName, sets, weight }> }`.
+- Types: `WorkoutExerciseInput { exerciseId, sets, reps, weight }`,
+  `LoggedWorkout { id, workoutDate, status, exercises: Array<{ exerciseId, exerciseName, sets, reps, weight }> }`.
 - Both accept the per-request client from `createClient` (`src/lib/supabase.ts`)
   and return a null-safe result (`{ ok: false }` / `[]`) when it is `null`,
   matching `catalog.ts`.

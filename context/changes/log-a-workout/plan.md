@@ -42,11 +42,21 @@ After this plan:
 
 - **Not building S-02 planning** — no future-dated `planned` workouts and no plan-acceptance flow. We add the `status` column (default `logged`) so S-02 is additive, but S-01 only ever writes `logged`, and the date input rejects future dates.
 - **Not building S-04 stats** — no charts or progress aggregation; the recent-workouts list is a flat read-back, not analytics.
-- **Not capturing reps or per-set detail** — entry is set-count + single weight per exercise (PRD model).
+- ~~**Not capturing reps or per-set detail**~~ — **superseded by the 2026-06-22 reps scope amendment** (see "Scope Amendments" below). Entry now captures set-count + reps-per-set + single weight per exercise; still **not** per-individual-set detail (one reps value covers all sets).
 - **Not adding a JSON API or Astro Actions** — the write path is form POST → API route → redirect, matching auth.
 - **Not editing or deleting workouts** — S-01 is create + read-back only. No edit/delete **UI**. A DELETE policy on `workouts` exists solely to support failed-write cleanup (see F1 / Phase 1), not as an end-user delete feature.
 - **Not adding a test suite** — none is configured; verification is build/lint + manual + Management API, as in F-01.
 - **Not generating Supabase types** — types are hand-written in `src/lib`, matching `catalog.ts`.
+
+## Scope Amendments
+
+- **2026-06-22 — reps per set (approved by user during Phase 3 manual verification).** The original S-01 model (PRD FR-003: exercise + set-count + weight) is extended to also capture **repetitions per set**, so a user can log e.g. "3 sets × 12 reps". Model: **one reps value per exercise** (all sets share it), consistent with the single-weight-per-exercise model — still not per-individual-set detail. Affected surfaces:
+  - New additive migration `supabase/migrations/20260622132912_add_workout_exercise_reps.sql` adds `reps integer not null check (reps > 0)` to `workout_exercises` (existing rows backfilled to 1 via a temporary default that is then dropped).
+  - `src/lib/workouts.ts`: `WorkoutExerciseInput` and `LoggedWorkout.exercises` gain `reps`; `createWorkout` inserts it and `getRecentWorkouts` selects/returns it.
+  - `src/pages/api/workouts.ts`: parses + validates `reps` (whole number ≥ 1).
+  - `src/components/workouts/WorkoutLogForm.tsx`: adds a "Reps per set" field.
+  - `docs/reference/contract-surfaces.md`: schema + helper-type entries updated.
+  - This note supersedes the struck-through "Not capturing reps" bullet under "What We're NOT Doing". The PRD's FR-003 model is intentionally extended here; downstream slices (S-04 stats) may aggregate over `reps`.
 
 ## Implementation Approach
 
@@ -378,9 +388,9 @@ Negligible at `target_scale: small`. Per-user row counts are tiny; the `(user_id
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
-- [x] 2.2 Lint passes on `src/lib/workouts.ts` (no new errors)
-- [x] 2.3 Helper compiles against the Phase 1 schema
+- [x] 2.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors) — c3cb6ec
+- [x] 2.2 Lint passes on `src/lib/workouts.ts` (no new errors) — c3cb6ec
+- [x] 2.3 Helper compiles against the Phase 1 schema — c3cb6ec
 
 #### Manual
 
@@ -393,17 +403,17 @@ Negligible at `target_scale: small`. Per-user row counts are tiny; the `(user_id
 
 #### Automated
 
-- [ ] 3.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
-- [ ] 3.2 Lint passes on changed files (no new errors)
-- [ ] 3.3 `/workouts` is in `PROTECTED_ROUTES` (signed-out request redirects to `/auth/signin`)
+- [x] 3.1 Type checking passes: `npm run build` / `npx astro check` (0 new errors)
+- [x] 3.2 Lint passes on changed files (no new errors)
+- [x] 3.3 `/workouts` is in `PROTECTED_ROUTES` (signed-out request redirects to `/auth/signin`)
 
 #### Manual
 
-- [ ] 3.4 `/workouts` shows the form; muscle-group filter populates exercises correctly
-- [ ] 3.5 Saving one exercise persists `workouts` + `workout_exercises` for the user and shows confirmation
-- [ ] 3.6 Future `workout_date` is rejected with a visible error
-- [ ] 3.7 Signed out, `/workouts` redirects to `/auth/signin`
-- [ ] 3.8 Logging one exercise completes within a minute
+- [x] 3.4 `/workouts` shows the form; muscle-group filter populates exercises correctly
+- [x] 3.5 Saving one exercise persists `workouts` + `workout_exercises` for the user and shows confirmation
+- [x] 3.6 Future `workout_date` is rejected with a visible error
+- [x] 3.7 Signed out, `/workouts` redirects to `/auth/signin`
+- [x] 3.8 Logging one exercise completes within a minute
 
 ### Phase 4: <1-min UX completion (multi-exercise + recent list)
 

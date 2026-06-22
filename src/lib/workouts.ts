@@ -22,6 +22,7 @@ type WorkoutClient = NonNullable<ReturnType<typeof createClient>>;
 export interface WorkoutExerciseInput {
   exerciseId: number;
   sets: number;
+  reps: number;
   weight: number;
 }
 
@@ -33,6 +34,7 @@ export interface LoggedWorkout {
     exerciseId: number;
     exerciseName: string;
     sets: number;
+    reps: number;
     weight: number;
   }[];
 }
@@ -53,6 +55,7 @@ interface RecentWorkoutRow {
   workout_exercises: {
     exercise_id: number;
     sets: number;
+    reps: number;
     weight: number;
     exercises: { name: string } | null;
   }[];
@@ -92,6 +95,7 @@ export async function createWorkout(
     workout_id: workout.id,
     exercise_id: exercise.exerciseId,
     sets: exercise.sets,
+    reps: exercise.reps,
     weight: exercise.weight,
   }));
 
@@ -124,7 +128,7 @@ export async function getRecentWorkouts(
 
   const { data, error } = await supabase
     .from("workouts")
-    .select("id, workout_date, status, workout_exercises(exercise_id, sets, weight, exercises(name))")
+    .select("id, workout_date, status, workout_exercises(exercise_id, sets, reps, weight, exercises(name))")
     .eq("user_id", userId)
     .order("workout_date", { ascending: false })
     .order("created_at", { ascending: false })
@@ -143,6 +147,7 @@ export async function getRecentWorkouts(
       exerciseId: child.exercise_id,
       exerciseName: child.exercises?.name ?? "",
       sets: child.sets,
+      reps: child.reps,
       weight: child.weight,
     })),
   }));
