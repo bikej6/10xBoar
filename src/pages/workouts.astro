@@ -2,9 +2,10 @@
 import Layout from "@/layouts/Layout.astro";
 import WorkoutLogForm from "@/components/workouts/WorkoutLogForm";
 import RecentWorkouts from "@/components/workouts/RecentWorkouts.astro";
+import PlannedWorkouts from "@/components/workouts/PlannedWorkouts.astro";
 import { createClient } from "@/lib/supabase";
 import { getMuscleGroups, getExercises } from "@/lib/catalog";
-import { getRecentWorkouts } from "@/lib/workouts";
+import { getRecentWorkouts, getPlannedWorkouts } from "@/lib/workouts";
 
 const error = Astro.url.searchParams.get("error");
 const saved = Astro.url.searchParams.get("saved") === "1";
@@ -15,7 +16,8 @@ const muscleGroups = await getMuscleGroups(supabase);
 const exercises = await getExercises(supabase);
 
 const { user } = Astro.locals;
-const recentWorkouts = user ? await getRecentWorkouts(supabase, user.id) : [];
+const recentWorkouts = user ? await getRecentWorkouts(supabase, user.id, 10, "logged") : [];
+const plannedWorkouts = user ? await getPlannedWorkouts(supabase, user.id) : [];
 ---
 
 <Layout title="Log a workout">
@@ -34,6 +36,7 @@ const recentWorkouts = user ? await getRecentWorkouts(supabase, user.id) : [];
         planned={planned}
         client:load
       />
+      <PlannedWorkouts workouts={plannedWorkouts} />
       <RecentWorkouts workouts={recentWorkouts} />
       <p class="mt-4 text-center text-sm text-blue-100/60">
         <a href="/dashboard" class="text-purple-300 hover:underline">Back to dashboard</a>

@@ -295,25 +295,25 @@ One additive migration (partial unique index). Apply via `db push` (PAT), verify
 
 #### Automated
 
-- [x] 3.1 `npm run build` passes; lint shows no new errors
+- [x] 3.1 `npm run build` passes; lint shows no new errors — bdb64d5
 
 #### Manual
 
-- [x] 3.2 Plan toggle changes copy + date bounds; picker disallows today/past
-- [x] 3.3 Plan-mode save persists `status = 'planned'` and confirms
-- [x] 3.4 Log mode unchanged (defaults today, allows backdate, rejects future, writes `logged`)
-- [x] 3.5 Behind-UTC "tomorrow" accepted; clearly-past date rejected server-side
-- [x] 3.6 Signed-out POST to `/api/workouts/plan` redirects to sign-in
+- [x] 3.2 Plan toggle changes copy + date bounds; picker disallows today/past — bdb64d5
+- [x] 3.3 Plan-mode save persists `status = 'planned'` and confirms — bdb64d5
+- [x] 3.4 Log mode unchanged (defaults today, allows backdate, rejects future, writes `logged`) — bdb64d5
+- [x] 3.5 Behind-UTC "tomorrow" accepted; clearly-past date rejected server-side — bdb64d5
+- [x] 3.6 Signed-out POST to `/api/workouts/plan` redirects to sign-in — bdb64d5
 
 ### Phase 4: Presentation — planned workouts list
 
 #### Automated
 
-- [ ] 4.1 `npm run build` passes; lint shows no new errors
+- [x] 4.1 `npm run build` passes; lint shows no new errors
 
 #### Manual
 
-- [ ] 4.2 Planned workout appears in "Planned workouts" (soonest first), not in "Recent workouts"
-- [ ] 4.3 Logged workouts appear only in "Recent workouts"
-- [ ] 4.4 Empty states render for both lists
-- [ ] 4.5 No regression to logging flow or recent-list rendering
+- [x] 4.2 Planned workout appears in "Planned workouts" (soonest first), not in "Recent workouts"
+- [x] 4.3 Logged workouts appear only in "Recent workouts"
+- [x] 4.4 Empty states render for both lists
+- [x] 4.5 No regression to logging flow or recent-list rendering
