@@ -1,7 +1,7 @@
 ---
 change_id: plan-future-workout
 title: Ręczne planowanie treningu (status planned) na przyszły dzień
-status: implemented
+status: impl_reviewed
 created: 2026-06-22
 updated: 2026-06-23
 archived_at: null
