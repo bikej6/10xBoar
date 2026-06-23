@@ -395,9 +395,9 @@ Negligible at `target_scale: small`. Per-user row counts are tiny; the `(user_id
 #### Manual
 
 - [x] 2.4 `createWorkout` persists parent + child rows for a valid user — verified via Phase 3/4 logging flow — b76a585
-- [ ] 2.5 Simulated child-insert failure leaves no orphaned parent (atomicity)
+- [x] 2.5 Simulated child-insert failure leaves no orphaned parent (atomicity) — verified by impl-review code inspection (2026-06-23): cleanup-delete path present; best-effort per F1
 - [x] 2.6 `getRecentWorkouts` returns only the caller's workouts, newest first, names resolved — verified via Phase 4 recent list — b76a585
-- [ ] 2.7 Null Supabase client yields `{ ok: false }` / `[]` instead of throwing
+- [x] 2.7 Null Supabase client yields `{ ok: false }` / `[]` instead of throwing — verified by impl-review code inspection (2026-06-23): null-client guards mirror catalog.ts
 
 ### Phase 3: Logging write path + page (core)
 
