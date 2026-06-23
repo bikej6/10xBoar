@@ -31,7 +31,7 @@ top_blocker: time
 | ---- | ------------------------ | ------------------------------------------------------------------------ | ---------------- | --------------------- | -------- |
 | F-01 | seed-exercise-catalog    | (foundation) wbudowany katalog ćwiczeń per partia mięśniowa jest zasiany | —                | FR-001                | done     |
 | S-01 | log-a-workout            | zalogować trening (ćwiczenie + serie + ciężar) w < 1 min, prywatnie      | F-01             | FR-003                | done     |
-| S-02 | plan-future-workout      | ręcznie zaplanować trening na przyszły dzień                             | F-01, S-01       | FR-004                | proposed |
+| S-02 | plan-future-workout      | ręcznie zaplanować trening na przyszły dzień                             | F-01, S-01       | FR-004                | done |
 | S-03 | history-based-proposal   | dostać propozycję treningu z własnej historii i przyjąć ją jako plan     | F-01, S-01, S-02 | US-01, FR-005         | blocked  |
 | S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | proposed |
 | S-05 | workout-calendar         | zobaczyć kalendarz z dniami treningowymi i szczegóły treningu po kliknięciu dnia | S-01     | FR-003 (odczyt) · nowy | proposed |
@@ -99,7 +99,7 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Tryb pełnej ręcznej kontroli (PRD: planowanie ≠ automatyczna propozycja). Sekwencjonowany przed S-03, bo akceptacja propozycji tworzy zaplanowany trening — S-03 konsumuje tę zdolność. Ryzyko: dublowanie logiki wpisu z S-01, jeśli schemat nie jest współdzielony.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Propozycja treningu z historii
 
@@ -183,3 +183,4 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 
 - **F-01: (foundation) wbudowany katalog ćwiczeń z przypisaniem do partii mięśniowych jest zasiany i odpytywalny; brak UI własnego po stronie użytkownika.** — Archived 2026-06-19 → `context/archive/2026-06-16-seed-exercise-catalog/`. Lesson: —.
 - **S-01: użytkownik może zalogować trening (ćwiczenie z katalogu + liczba serii + ciężar) dla danego dnia w < 1 min, a dane są trwałe i widoczne wyłącznie dla niego.** — Archived 2026-06-23 → `context/archive/2026-06-19-log-a-workout/`. Lesson: —.
+- **S-02: użytkownik może ręcznie zaplanować trening (ćwiczenia z katalogu) na wybrany przyszły dzień.** — Archived 2026-06-23 → `context/archive/2026-06-22-plan-future-workout/`. Lesson: —.
