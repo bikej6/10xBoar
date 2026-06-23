@@ -3,21 +3,20 @@ import { createClient } from "@/lib/supabase";
 import { createWorkout } from "@/lib/workouts";
 import { parseExercisesField, parseIsoDate, todayUtcIso } from "@/lib/workout-submission";
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
 /**
- * Reject only when the date is clearly in the future — beyond today (UTC) + 1
- * day. The one-day grace (F2) avoids falsely rejecting a valid local "today"
- * for users in positive-UTC offsets, since the Workers clock is UTC while the
- * date input defaults to the browser's local today.
+ * Accept only dates that are not strictly in the past (UTC) — the grace-inclusive
+ * backstop for planning. The form enforces the strict "tomorrow onward" UX via
+ * `min`; the server allows `submitted >= today (UTC)` so a *behind*-UTC user
+ * (e.g. UTC−8) whose genuine local "tomorrow" still reads as today in UTC isn't
+ * falsely rejected. Mirror of the +1-day grace on the logging route, flipped.
  */
-function isAcceptableDate(value: string): boolean {
+function isFutureDate(value: string): boolean {
   const submitted = parseIsoDate(value);
   if (Number.isNaN(submitted)) {
     return false;
   }
   const today = Date.parse(`${todayUtcIso()}T00:00:00Z`);
-  return submitted <= today + DAY_MS;
+  return submitted >= today;
 }
 
 function redirectError(context: Parameters<APIRoute>[0], message: string) {
@@ -37,11 +36,10 @@ export const POST: APIRoute = async (context) => {
     return context.redirect("/auth/signin");
   }
 
-  const rawDate = (form.get("workout_date") as string | null)?.trim();
-  const workoutDate = rawDate && rawDate.length > 0 ? rawDate : todayUtcIso();
+  const workoutDate = (form.get("workout_date") as string | null)?.trim() ?? "";
 
-  if (!isAcceptableDate(workoutDate)) {
-    return redirectError(context, "Pick a date that is not in the future.");
+  if (!isFutureDate(workoutDate)) {
+    return redirectError(context, "Pick a future date to plan a workout.");
   }
 
   const exercises = parseExercisesField(form.get("exercises") as string | null);
@@ -49,10 +47,10 @@ export const POST: APIRoute = async (context) => {
     return redirectError(context, exercises);
   }
 
-  const result = await createWorkout(supabase, { userId: user.id, workoutDate, exercises });
+  const result = await createWorkout(supabase, { userId: user.id, workoutDate, exercises, status: "planned" });
   if (!result.ok) {
     return redirectError(context, result.error);
   }
 
-  return context.redirect("/workouts?saved=1");
+  return context.redirect("/workouts?planned=1");
 };

@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import type { ReactNode } from "react";
-import { Dumbbell, Hash, Repeat, Weight, Calendar, Save, CircleCheck, Plus, Trash2 } from "lucide-react";
+import {
+  Dumbbell,
+  Hash,
+  Repeat,
+  Weight,
+  Calendar,
+  Save,
+  CalendarPlus,
+  CircleCheck,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import type { MuscleGroup, Exercise } from "@/lib/catalog";
 import { ServerError } from "@/components/auth/ServerError";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { cn } from "@/lib/utils";
+
+type Mode = "log" | "plan";
 
 interface Props {
   muscleGroups: MuscleGroup[];
   exercises: Exercise[];
   serverError?: string | null;
   saved?: boolean;
+  planned?: boolean;
 }
 
 interface ExerciseRow {
@@ -51,9 +65,10 @@ function stripNegative(value: string): string {
   return value.replace(/-/g, "");
 }
 
-/** Local `YYYY-MM-DD` for the browser's today (the date input's default + max). */
-function localTodayIso(): string {
+/** Local `YYYY-MM-DD` for the browser's today, optionally shifted by `dayOffset`. */
+function localDateIso(dayOffset = 0): string {
   const now = new Date();
+  now.setDate(now.getDate() + dayOffset);
   const offsetMs = now.getTimezoneOffset() * 60 * 1000;
   return new Date(now.getTime() - offsetMs).toISOString().slice(0, 10);
 }
@@ -94,13 +109,30 @@ function NumberField({ label, icon, value, min, placeholder, error, onChange }: 
   );
 }
 
-export default function WorkoutLogForm({ muscleGroups, exercises, serverError, saved }: Props) {
-  const today = localTodayIso();
+export default function WorkoutLogForm({ muscleGroups, exercises, serverError, saved, planned }: Props) {
+  const today = localDateIso(0);
+  const tomorrow = localDateIso(1);
 
+  const [mode, setMode] = useState<Mode>("log");
   const [rows, setRows] = useState<ExerciseRow[]>([emptyRow()]);
   const [rowErrors, setRowErrors] = useState<RowErrors[]>([{}]);
   const [date, setDate] = useState(today);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Switching mode re-bounds the date: plan needs a future day, log needs
+  // today-or-past. Snap the current value into the new mode's allowed range.
+  function switchMode(next: Mode) {
+    if (next === mode) {
+      return;
+    }
+    setMode(next);
+    setFormError(null);
+    if (next === "plan" && date <= today) {
+      setDate(tomorrow);
+    } else if (next === "log" && date > today) {
+      setDate(today);
+    }
+  }
 
   function exercisesForGroup(muscleGroupId: string): Exercise[] {
     if (!muscleGroupId) {
@@ -184,12 +216,47 @@ export default function WorkoutLogForm({ muscleGroups, exercises, serverError, s
       weight: Number(row.weight),
     }));
 
+  const isPlan = mode === "plan";
+
   return (
-    <form method="POST" action="/api/workouts" className="space-y-4" onSubmit={handleSubmit} noValidate>
+    <form
+      method="POST"
+      action={isPlan ? "/api/workouts/plan" : "/api/workouts"}
+      className="space-y-4"
+      onSubmit={handleSubmit}
+      noValidate
+    >
+      <div className="grid grid-cols-2 gap-1 rounded-xl border border-white/10 bg-white/5 p-1" role="tablist">
+        {(["log", "plan"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            role="tab"
+            aria-selected={mode === m}
+            onClick={() => {
+              switchMode(m);
+            }}
+            className={cn(
+              "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+              mode === m ? "bg-purple-500/30 text-white" : "text-blue-100/70 hover:text-white",
+            )}
+          >
+            {m === "log" ? "Log" : "Plan"}
+          </button>
+        ))}
+      </div>
+
       {saved ? (
         <p className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-900/30 px-3 py-2 text-sm text-green-300">
           <CircleCheck className="size-4 shrink-0" />
           Workout saved.
+        </p>
+      ) : null}
+
+      {planned ? (
+        <p className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-900/30 px-3 py-2 text-sm text-green-300">
+          <CircleCheck className="size-4 shrink-0" />
+          Workout planned.
         </p>
       ) : null}
 
@@ -326,14 +393,17 @@ export default function WorkoutLogForm({ muscleGroups, exercises, serverError, s
             name="workout_date"
             type="date"
             value={date}
-            max={today}
+            min={isPlan ? tomorrow : undefined}
+            max={isPlan ? undefined : today}
             onChange={(e) => {
               setDate(e.target.value);
             }}
             className={cn(fieldBase, fieldOk)}
           />
         </div>
-        <p className="mt-1 text-xs text-blue-100/50">Defaults to today; backdating is allowed.</p>
+        <p className="mt-1 text-xs text-blue-100/50">
+          {isPlan ? "Pick a future day." : "Defaults to today; backdating is allowed."}
+        </p>
       </div>
 
       <input type="hidden" name="exercises" value={JSON.stringify(payload)} />
@@ -341,9 +411,15 @@ export default function WorkoutLogForm({ muscleGroups, exercises, serverError, s
       <ServerError message={serverError} />
       {formError ? <ServerError message={formError} /> : null}
 
-      <SubmitButton pendingText="Saving…" icon={<Save className="size-4" />}>
-        Save workout
-      </SubmitButton>
+      {isPlan ? (
+        <SubmitButton pendingText="Planning…" icon={<CalendarPlus className="size-4" />}>
+          Plan workout
+        </SubmitButton>
+      ) : (
+        <SubmitButton pendingText="Saving…" icon={<Save className="size-4" />}>
+          Save workout
+        </SubmitButton>
+      )}
     </form>
   );
 }

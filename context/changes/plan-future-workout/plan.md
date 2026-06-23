@@ -283,27 +283,27 @@ One additive migration (partial unique index). Apply via `db push` (PAT), verify
 
 #### Automated
 
-- [x] 2.1 Type checking / `npm run build` passes (signatures backward-compatible)
-- [x] 2.2 Lint shows no new errors
+- [x] 2.1 Type checking / `npm run build` passes (signatures backward-compatible) — adc6093
+- [x] 2.2 Lint shows no new errors — adc6093
 
 #### Manual
 
-- [x] 2.3 `createWorkout` writes `planned`; duplicate same-date returns the friendly message
-- [x] 2.4 `getPlannedWorkouts` returns planned-only soonest-first; `getRecentWorkouts(..., 'logged')` excludes planned
+- [x] 2.3 `createWorkout` writes `planned`; duplicate same-date returns the friendly message — adc6093
+- [x] 2.4 `getPlannedWorkouts` returns planned-only soonest-first; `getRecentWorkouts(..., 'logged')` excludes planned — adc6093
 
 ### Phase 3: Entry path — plan-mode toggle + API route
 
 #### Automated
 
-- [ ] 3.1 `npm run build` passes; lint shows no new errors
+- [x] 3.1 `npm run build` passes; lint shows no new errors
 
 #### Manual
 
-- [ ] 3.2 Plan toggle changes copy + date bounds; picker disallows today/past
-- [ ] 3.3 Plan-mode save persists `status = 'planned'` and confirms
-- [ ] 3.4 Log mode unchanged (defaults today, allows backdate, rejects future, writes `logged`)
-- [ ] 3.5 Behind-UTC "tomorrow" accepted; clearly-past date rejected server-side
-- [ ] 3.6 Signed-out POST to `/api/workouts/plan` redirects to sign-in
+- [x] 3.2 Plan toggle changes copy + date bounds; picker disallows today/past
+- [x] 3.3 Plan-mode save persists `status = 'planned'` and confirms
+- [x] 3.4 Log mode unchanged (defaults today, allows backdate, rejects future, writes `logged`)
+- [x] 3.5 Behind-UTC "tomorrow" accepted; clearly-past date rejected server-side
+- [x] 3.6 Signed-out POST to `/api/workouts/plan` redirects to sign-in
 
 ### Phase 4: Presentation — planned workouts list
 
