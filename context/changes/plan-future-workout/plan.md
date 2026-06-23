@@ -309,11 +309,11 @@ One additive migration (partial unique index). Apply via `db push` (PAT), verify
 
 #### Automated
 
-- [x] 4.1 `npm run build` passes; lint shows no new errors
+- [x] 4.1 `npm run build` passes; lint shows no new errors — ff824c3
 
 #### Manual
 
-- [x] 4.2 Planned workout appears in "Planned workouts" (soonest first), not in "Recent workouts"
-- [x] 4.3 Logged workouts appear only in "Recent workouts"
-- [x] 4.4 Empty states render for both lists
-- [x] 4.5 No regression to logging flow or recent-list rendering
+- [x] 4.2 Planned workout appears in "Planned workouts" (soonest first), not in "Recent workouts" — ff824c3
+- [x] 4.3 Logged workouts appear only in "Recent workouts" — ff824c3
+- [x] 4.4 Empty states render for both lists — ff824c3
+- [x] 4.5 No regression to logging flow or recent-list rendering — ff824c3
