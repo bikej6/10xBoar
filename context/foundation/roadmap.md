@@ -3,7 +3,7 @@ project: "10xBoar"
 version: 1
 status: draft
 created: 2026-06-14
-updated: 2026-06-22
+updated: 2026-06-23
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -30,7 +30,7 @@ top_blocker: time
 | ID   | Change ID                | Outcome (użytkownik może …)                                              | Prerequisites    | PRD refs              | Status   |
 | ---- | ------------------------ | ------------------------------------------------------------------------ | ---------------- | --------------------- | -------- |
 | F-01 | seed-exercise-catalog    | (foundation) wbudowany katalog ćwiczeń per partia mięśniowa jest zasiany | —                | FR-001                | done     |
-| S-01 | log-a-workout            | zalogować trening (ćwiczenie + serie + ciężar) w < 1 min, prywatnie      | F-01             | FR-003                | proposed |
+| S-01 | log-a-workout            | zalogować trening (ćwiczenie + serie + ciężar) w < 1 min, prywatnie      | F-01             | FR-003                | done     |
 | S-02 | plan-future-workout      | ręcznie zaplanować trening na przyszły dzień                             | F-01, S-01       | FR-004                | proposed |
 | S-03 | history-based-proposal   | dostać propozycję treningu z własnej historii i przyjąć ją jako plan     | F-01, S-01, S-02 | US-01, FR-005         | blocked  |
 | S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | proposed |
@@ -87,7 +87,7 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **Unknowns:**
   - Czy izolacja per-użytkownik egzekwowana jest na poziomie zapytania (konwencja `createClient` per-request) czy dodatkowo regułami bazy? — Owner: user. Block: no.
 - **Risk:** Twardy warunek wstępny dla gwiazdy przewodniej i nośnik schematu treningu + izolacji per-użytkownik. Sekwencjonowany zaraz po katalogu, bo bez zalogowanej historii nie ma czego analizować. Ryzyko: UI niezoptymalizowane pod < 1 min podważa główne kryterium sukcesu.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Planowanie treningu na przyszły dzień
 
@@ -182,3 +182,4 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 ## Done
 
 - **F-01: (foundation) wbudowany katalog ćwiczeń z przypisaniem do partii mięśniowych jest zasiany i odpytywalny; brak UI własnego po stronie użytkownika.** — Archived 2026-06-19 → `context/archive/2026-06-16-seed-exercise-catalog/`. Lesson: —.
+- **S-01: użytkownik może zalogować trening (ćwiczenie z katalogu + liczba serii + ciężar) dla danego dnia w < 1 min, a dane są trwałe i widoczne wyłącznie dla niego.** — Archived 2026-06-23 → `context/archive/2026-06-19-log-a-workout/`. Lesson: —.

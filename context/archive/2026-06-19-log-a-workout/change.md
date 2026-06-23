@@ -1,10 +1,10 @@
 ---
 change_id: log-a-workout
 title: Logowanie treningu w < 1 min z izolacją per-użytkownik
-status: implemented
+status: archived
 created: 2026-06-19
-updated: 2026-06-22
-archived_at: null
+updated: 2026-06-23
+archived_at: 2026-06-23T17:04:41Z
 ---
 
 ## Notes
