@@ -19,6 +19,9 @@ import type { createClient } from "@/lib/supabase";
 
 type WorkoutClient = NonNullable<ReturnType<typeof createClient>>;
 
+/** A workout is either logged history or a planned future session (S-02). */
+export type WorkoutStatus = "logged" | "planned";
+
 export interface WorkoutExerciseInput {
   exerciseId: number;
   sets: number;
@@ -45,6 +48,8 @@ interface CreateWorkoutInput {
   userId: string;
   workoutDate: string;
   exercises: WorkoutExerciseInput[];
+  /** Defaults to `logged`; S-02 passes `planned` to create a future plan. */
+  status?: WorkoutStatus;
 }
 
 /** Shape of the nested read used by `getRecentWorkouts` (PostgREST embeds). */
@@ -62,15 +67,19 @@ interface RecentWorkoutRow {
 }
 
 /**
- * Create one dated workout (status `logged`) with its exercise rows for the
- * given user. Inserts the parent `workouts` row, then its `workout_exercises`
- * children; on child-insert failure, deletes the just-created parent
- * (best-effort cleanup — not crash-atomic, acceptable at small scale per F1).
- * Never throws.
+ * Create one dated workout with its exercise rows for the given user. Defaults
+ * to status `logged`; pass `status: "planned"` to create a future plan (S-02).
+ * Inserts the parent `workouts` row, then its `workout_exercises` children; on
+ * child-insert failure, deletes the just-created parent (best-effort cleanup —
+ * not crash-atomic, acceptable at small scale per F1).
+ *
+ * The partial unique index `workouts_one_planned_per_day_idx` allows at most one
+ * `planned` row per `(user, date)`; a duplicate insert raises Postgres
+ * unique-violation `23505`, surfaced here as a friendly message. Never throws.
  */
 export async function createWorkout(
   supabase: WorkoutClient | null,
-  { userId, workoutDate, exercises }: CreateWorkoutInput,
+  { userId, workoutDate, exercises, status = "logged" }: CreateWorkoutInput,
 ): Promise<CreateWorkoutResult> {
   if (!supabase) {
     return { ok: false, error: "Supabase client unavailable." };
@@ -82,12 +91,15 @@ export async function createWorkout(
 
   const { data: workout, error: workoutError } = await supabase
     .from("workouts")
-    .insert({ user_id: userId, workout_date: workoutDate, status: "logged" })
+    .insert({ user_id: userId, workout_date: workoutDate, status })
     .select("id")
     .single()
     .overrideTypes<{ id: number }, { merge: false }>();
 
   if (workoutError) {
+    if (workoutError.code === "23505") {
+      return { ok: false, error: "You already have a plan for that day." };
+    }
     return { ok: false, error: "Could not save the workout." };
   }
 
@@ -111,35 +123,12 @@ export async function createWorkout(
   return { ok: true, id: workout.id };
 }
 
-/**
- * The caller's recent workouts, newest first (`workout_date` desc, then
- * `created_at` desc), with their exercises and resolved catalog names. RLS
- * already scopes rows to the caller; the explicit `user_id` filter keeps the
- * intent clear. Returns `[]` on a null client or query error.
- */
-export async function getRecentWorkouts(
-  supabase: WorkoutClient | null,
-  userId: string,
-  limit = 10,
-): Promise<LoggedWorkout[]> {
-  if (!supabase) {
-    return [];
-  }
+/** PostgREST embed selected by both workout reads. */
+const WORKOUT_SELECT = "id, workout_date, status, workout_exercises(exercise_id, sets, reps, weight, exercises(name))";
 
-  const { data, error } = await supabase
-    .from("workouts")
-    .select("id, workout_date, status, workout_exercises(exercise_id, sets, reps, weight, exercises(name))")
-    .eq("user_id", userId)
-    .order("workout_date", { ascending: false })
-    .order("created_at", { ascending: false })
-    .limit(limit)
-    .overrideTypes<RecentWorkoutRow[], { merge: false }>();
-
-  if (error) {
-    return [];
-  }
-
-  return data.map((row) => ({
+/** Map a nested PostgREST row to the `LoggedWorkout` shape. */
+function mapWorkoutRow(row: RecentWorkoutRow): LoggedWorkout {
+  return {
     id: row.id,
     workoutDate: row.workout_date,
     status: row.status,
@@ -150,5 +139,75 @@ export async function getRecentWorkouts(
       reps: child.reps,
       weight: child.weight,
     })),
-  }));
+  };
+}
+
+/**
+ * The caller's recent workouts, newest first (`workout_date` desc, then
+ * `created_at` desc), with their exercises and resolved catalog names. Pass
+ * `status` to restrict to one kind (e.g. `"logged"` to exclude planned rows);
+ * omitted returns all statuses. RLS already scopes rows to the caller; the
+ * explicit `user_id` filter keeps the intent clear. Returns `[]` on a null
+ * client or query error.
+ */
+export async function getRecentWorkouts(
+  supabase: WorkoutClient | null,
+  userId: string,
+  limit = 10,
+  status?: WorkoutStatus,
+): Promise<LoggedWorkout[]> {
+  if (!supabase) {
+    return [];
+  }
+
+  let query = supabase.from("workouts").select(WORKOUT_SELECT).eq("user_id", userId);
+
+  if (status) {
+    query = query.eq("status", status);
+  }
+
+  const { data, error } = await query
+    .order("workout_date", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(limit)
+    .overrideTypes<RecentWorkoutRow[], { merge: false }>();
+
+  if (error) {
+    return [];
+  }
+
+  return data.map(mapWorkoutRow);
+}
+
+/**
+ * The caller's planned (future) workouts, soonest upcoming first
+ * (`workout_date` asc, then `created_at` asc), with their exercises and
+ * resolved catalog names. Mirrors `getRecentWorkouts` but filtered to
+ * `status = 'planned'` with ascending order. Returns `[]` on a null client or
+ * query error.
+ */
+export async function getPlannedWorkouts(
+  supabase: WorkoutClient | null,
+  userId: string,
+  limit = 10,
+): Promise<LoggedWorkout[]> {
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("workouts")
+    .select(WORKOUT_SELECT)
+    .eq("user_id", userId)
+    .eq("status", "planned")
+    .order("workout_date", { ascending: true })
+    .order("created_at", { ascending: true })
+    .limit(limit)
+    .overrideTypes<RecentWorkoutRow[], { merge: false }>();
+
+  if (error) {
+    return [];
+  }
+
+  return data.map(mapWorkoutRow);
 }

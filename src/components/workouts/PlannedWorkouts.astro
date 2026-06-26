@@ -1,0 +1,39 @@
+---
+import type { LoggedWorkout } from "@/lib/workouts";
+
+interface Props {
+  workouts: LoggedWorkout[];
+}
+
+const { workouts } = Astro.props;
+---
+
+<section class="mt-8">
+  <h2 class="mb-3 text-sm font-semibold tracking-wide text-blue-100/70 uppercase">Planned workouts</h2>
+
+  {
+    workouts.length === 0 ? (
+      <p class="rounded-lg border border-white/10 bg-white/5 px-3 py-4 text-center text-sm text-blue-100/50">
+        No workouts planned yet.
+      </p>
+    ) : (
+      <ul class="space-y-3">
+        {workouts.map((workout) => (
+          <li class="rounded-xl border border-white/10 bg-white/5 p-4">
+            <div class="mb-2 text-sm font-medium text-white">{workout.workoutDate}</div>
+            <ul class="space-y-1 text-sm text-blue-100/80">
+              {workout.exercises.map((exercise) => (
+                <li class="flex justify-between gap-3">
+                  <span>{exercise.exerciseName}</span>
+                  <span class="shrink-0 text-blue-100/60">
+                    {exercise.sets} × {exercise.reps} @ {exercise.weight} kg
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>
