@@ -1,17 +1,6 @@
 import React, { useState } from "react";
 import type { ReactNode } from "react";
-import {
-  Dumbbell,
-  Hash,
-  Repeat,
-  Weight,
-  Calendar,
-  Save,
-  CalendarPlus,
-  CircleCheck,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Dumbbell, Hash, Repeat, Weight, Calendar, Save, CalendarPlus, CircleCheck, Plus, Trash2 } from "lucide-react";
 import type { MuscleGroup, Exercise } from "@/lib/catalog";
 import { ServerError } from "@/components/auth/ServerError";
 import { SubmitButton } from "@/components/auth/SubmitButton";
