@@ -215,27 +215,27 @@ None. No schema, data, or RLS changes. The change is purely additive code; rever
 
 #### Automated
 
-- [x] 1.1 Linting passes (no new errors vs baseline): `npm run lint`
-- [x] 1.2 Production build succeeds: `npm run build`
+- [x] 1.1 Linting passes (no new errors vs baseline): `npm run lint` — 13e6340
+- [x] 1.2 Production build succeeds: `npm run build` — 13e6340
 
 #### Manual
 
-- [x] 1.3 Propose URL for a user with ≥ 3 sessions renders an `ok` result with bumped weights
-- [x] 1.4 Propose URL for a user with < 3 qualifying sessions renders `insufficient-history` with correct `sessionCount`
-- [x] 1.5 Unknown/empty `muscleGroup` yields no proposal (no error)
+- [x] 1.3 Propose URL for a user with ≥ 3 sessions renders an `ok` result with bumped weights — 13e6340
+- [x] 1.4 Propose URL for a user with < 3 qualifying sessions renders `insufficient-history` with correct `sessionCount` — 13e6340
+- [x] 1.5 Unknown/empty `muscleGroup` yields no proposal (no error) — 13e6340
 
 ### Phase 2: "Propose" tab UI
 
 #### Automated
 
-- [ ] 2.1 Linting passes (no new errors vs baseline): `npm run lint`
-- [ ] 2.2 Production build succeeds: `npm run build`
+- [x] 2.1 Linting passes (no new errors vs baseline): `npm run lint`
+- [x] 2.2 Production build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Propose tab produces a read-only plan with bumped weights for a group with ≥ 3 sessions
-- [ ] 2.4 Accept as plan creates a planned workout and shows the confirmation
-- [ ] 2.5 Accepting into an occupied day shows the friendly collision error and creates nothing
-- [ ] 2.6 Group with < 3 sessions shows empty-state with correct count and working CTA
-- [ ] 2.7 Ignore creates nothing; Log/Plan tabs unaffected
-- [ ] 2.8 Proposal appears within ~2s on desktop and mobile-width viewport
+- [x] 2.3 Propose tab produces a read-only plan with bumped weights for a group with ≥ 3 sessions
+- [x] 2.4 Accept as plan creates a planned workout and shows the confirmation
+- [x] 2.5 Accepting into an occupied day shows the friendly collision error and creates nothing
+- [x] 2.6 Group with < 3 sessions shows empty-state with correct count and working CTA
+- [x] 2.7 Ignore creates nothing; Log/Plan tabs unaffected
+- [x] 2.8 Proposal appears within ~2s on desktop and mobile-width viewport

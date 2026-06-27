@@ -41,16 +41,11 @@ const proposal = proposeRequested && user ? await generateProposal(supabase, use
         serverError={error}
         saved={saved}
         planned={planned}
+        proposal={proposal}
+        proposeMuscleGroup={proposeMuscleGroup}
+        proposeDate={proposeDate}
         client:load
       />
-      {
-        /* TEMP (Phase 1 verification only — removed in Phase 2): raw proposal render. */
-        proposeRequested ? (
-          <pre class="mt-4 overflow-x-auto rounded-lg border border-white/10 bg-black/30 p-3 text-xs text-blue-100/80">
-            {JSON.stringify({ proposeMuscleGroup, proposeDate, proposal }, null, 2)}
-          </pre>
-        ) : null
-      }
       <PlannedWorkouts workouts={plannedWorkouts} />
       <RecentWorkouts workouts={recentWorkouts} />
       <p class="mt-4 text-center text-sm text-blue-100/60">
