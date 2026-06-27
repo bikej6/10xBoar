@@ -33,7 +33,7 @@ top_blocker: time
 | S-01 | log-a-workout            | zalogować trening (ćwiczenie + serie + ciężar) w < 1 min, prywatnie      | F-01             | FR-003                | done     |
 | S-02 | plan-future-workout      | ręcznie zaplanować trening na przyszły dzień                             | F-01, S-01       | FR-004                | done |
 | S-03 | history-based-proposal   | dostać propozycję treningu z własnej historii i przyjąć ją jako plan     | F-01, S-01, S-02 | US-01, FR-005         | done     |
-| S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | proposed |
+| S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | done |
 | S-05 | workout-calendar         | zobaczyć kalendarz z dniami treningowymi i szczegóły treningu po kliknięciu dnia | S-01     | FR-003 (odczyt) · nowy | proposed |
 | S-06 | edit-workout             | edytować zapisany trening (z widoku szczegółów)                          | S-01, S-05       | nowy (rozszerza zakres) | proposed |
 
@@ -125,7 +125,7 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Widok tylko-do-odczytu nad tą samą historią; niezależny od propozycji, więc może iść równolegle. Sekwencjonowany po S-01, bo bez historii nie ma czego wykreślać. Ryzyko: niskie — wartość drugorzędna, nie blokuje ścieżki krytycznej.
-- **Status:** proposed
+- **Status:** done
 
 ### S-05: Kalendarz historii treningów
 
@@ -185,3 +185,4 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **S-01: użytkownik może zalogować trening (ćwiczenie z katalogu + liczba serii + ciężar) dla danego dnia w < 1 min, a dane są trwałe i widoczne wyłącznie dla niego.** — Archived 2026-06-23 → `context/archive/2026-06-19-log-a-workout/`. Lesson: —.
 - **S-02: użytkownik może ręcznie zaplanować trening (ćwiczenia z katalogu) na wybrany przyszły dzień.** — Archived 2026-06-23 → `context/archive/2026-06-22-plan-future-workout/`. Lesson: —.
 - **S-03: użytkownik może poprosić o propozycję treningu na wybraną partię mięśniową i docelowy dzień, zobaczyć plan oparty na własnej historii, a następnie przyjąć go jako zaplanowany trening lub zignorować.** — Archived 2026-06-27 → `context/archive/2026-06-26-history-based-proposal/`. Lesson: —.
+- **S-04: użytkownik może zobaczyć statystyki/wykres progresu ciężaru dla każdego ćwiczenia.** — Archived 2026-06-27 → `context/archive/2026-06-27-weight-progress-stats/`. Lesson: —.
