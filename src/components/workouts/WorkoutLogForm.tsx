@@ -142,7 +142,9 @@ export default function WorkoutLogForm({
   // The Propose request form owns its own group + date (a GET navigation), kept
   // separate from the log/plan POST form's `date`.
   const [proposeGroup, setProposeGroup] = useState(proposeMuscleGroup ?? "");
-  const [proposeRequestDate, setProposeRequestDate] = useState(proposeDate ?? today);
+  const [proposeRequestDate, setProposeRequestDate] = useState(
+    proposeDate && proposeDate.length > 0 ? proposeDate : today,
+  );
 
   // Switching mode re-bounds the date: plan needs a future day, log needs
   // today-or-past. Snap the current value into the new mode's allowed range.
