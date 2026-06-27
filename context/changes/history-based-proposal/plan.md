@@ -228,14 +228,14 @@ None. No schema, data, or RLS changes. The change is purely additive code; rever
 
 #### Automated
 
-- [x] 2.1 Linting passes (no new errors vs baseline): `npm run lint`
-- [x] 2.2 Production build succeeds: `npm run build`
+- [x] 2.1 Linting passes (no new errors vs baseline): `npm run lint` — 2818363
+- [x] 2.2 Production build succeeds: `npm run build` — 2818363
 
 #### Manual
 
-- [x] 2.3 Propose tab produces a read-only plan with bumped weights for a group with ≥ 3 sessions
-- [x] 2.4 Accept as plan creates a planned workout and shows the confirmation
-- [x] 2.5 Accepting into an occupied day shows the friendly collision error and creates nothing
-- [x] 2.6 Group with < 3 sessions shows empty-state with correct count and working CTA
-- [x] 2.7 Ignore creates nothing; Log/Plan tabs unaffected
-- [x] 2.8 Proposal appears within ~2s on desktop and mobile-width viewport
+- [x] 2.3 Propose tab produces a read-only plan with bumped weights for a group with ≥ 3 sessions — 2818363
+- [x] 2.4 Accept as plan creates a planned workout and shows the confirmation — 2818363
+- [x] 2.5 Accepting into an occupied day shows the friendly collision error and creates nothing — 2818363
+- [x] 2.6 Group with < 3 sessions shows empty-state with correct count and working CTA — 2818363
+- [x] 2.7 Ignore creates nothing; Log/Plan tabs unaffected — 2818363
+- [x] 2.8 Proposal appears within ~2s on desktop and mobile-width viewport — 2818363

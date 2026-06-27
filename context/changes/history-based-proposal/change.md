@@ -1,9 +1,9 @@
 ---
 change_id: history-based-proposal
 title: History based proposal
-status: implementing
+status: implemented
 created: 2026-06-26
-updated: 2026-06-26
+updated: 2026-06-27
 archived_at: null
 ---
 
