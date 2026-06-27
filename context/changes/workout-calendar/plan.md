@@ -292,27 +292,27 @@ None. No schema, RLS, or data migration. Read-only over existing tables and poli
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npm run lint`
-- [x] 1.2 Production build succeeds: `npm run build`
+- [x] 1.1 Type checking passes: `npm run lint` — c07f316
+- [x] 1.2 Production build succeeds: `npm run build` — c07f316
 
 #### Manual
 
-- [x] 1.3 `getAllWorkouts` returns both logged and planned rows for a seeded account
-- [x] 1.4 `buildMonthGrid` produces correct leading/trailing days with full coverage
+- [x] 1.3 `getAllWorkouts` returns both logged and planned rows for a seeded account — c07f316
+- [x] 1.4 `buildMonthGrid` produces correct leading/trailing days with full coverage — c07f316
 
 ### Phase 2: Calendar island + page + navigation
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npm run lint`
-- [ ] 2.2 Production build succeeds: `npm run build`
+- [x] 2.1 Type checking passes: `npm run lint`
+- [x] 2.2 Production build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Logged vs planned days marked distinctly; legend matches
-- [ ] 2.4 Clicking a marked day expands details; empty day shows no error
-- [ ] 2.5 Prev/next moves months with no reload; markers re-place; today highlighted
-- [ ] 2.6 Fresh account shows the empty state
-- [ ] 2.7 Signed-out `/calendar` redirects to `/auth/signin`
-- [ ] 2.8 Dashboard link navigates to `/calendar`
-- [ ] 2.9 Renders correctly on a mobile-width viewport
+- [x] 2.3 Logged vs planned days marked distinctly; legend matches
+- [x] 2.4 Clicking a marked day expands details; empty day shows no error
+- [x] 2.5 Prev/next moves months with no reload; markers re-place; today highlighted
+- [x] 2.6 Fresh account shows the empty state
+- [x] 2.7 Signed-out `/calendar` redirects to `/auth/signin`
+- [x] 2.8 Dashboard link navigates to `/calendar`
+- [x] 2.9 Renders correctly on a mobile-width viewport
