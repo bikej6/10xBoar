@@ -1,7 +1,7 @@
 ---
 change_id: workout-calendar
 title: Workout calendar
-status: implementing
+status: implemented
 created: 2026-06-27
 updated: 2026-06-27
 archived_at: null

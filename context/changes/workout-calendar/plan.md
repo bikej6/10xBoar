@@ -304,15 +304,15 @@ None. No schema, RLS, or data migration. Read-only over existing tables and poli
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npm run lint`
-- [x] 2.2 Production build succeeds: `npm run build`
+- [x] 2.1 Type checking passes: `npm run lint` — 7b84074
+- [x] 2.2 Production build succeeds: `npm run build` — 7b84074
 
 #### Manual
 
-- [x] 2.3 Logged vs planned days marked distinctly; legend matches
-- [x] 2.4 Clicking a marked day expands details; empty day shows no error
-- [x] 2.5 Prev/next moves months with no reload; markers re-place; today highlighted
-- [x] 2.6 Fresh account shows the empty state
-- [x] 2.7 Signed-out `/calendar` redirects to `/auth/signin`
-- [x] 2.8 Dashboard link navigates to `/calendar`
-- [x] 2.9 Renders correctly on a mobile-width viewport
+- [x] 2.3 Logged vs planned days marked distinctly; legend matches — 7b84074
+- [x] 2.4 Clicking a marked day expands details; empty day shows no error — 7b84074
+- [x] 2.5 Prev/next moves months with no reload; markers re-place; today highlighted — 7b84074
+- [x] 2.6 Fresh account shows the empty state — 7b84074
+- [x] 2.7 Signed-out `/calendar` redirects to `/auth/signin` — 7b84074
+- [x] 2.8 Dashboard link navigates to `/calendar` — 7b84074
+- [x] 2.9 Renders correctly on a mobile-width viewport — 7b84074
