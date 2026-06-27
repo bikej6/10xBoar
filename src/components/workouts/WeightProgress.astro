@@ -1,0 +1,37 @@
+---
+import type { ExerciseProgress } from "@/lib/stats";
+import Sparkline from "@/components/workouts/Sparkline.astro";
+
+interface Props {
+  exercises: ExerciseProgress[];
+}
+
+const { exercises } = Astro.props;
+---
+
+<section class="mt-8">
+  <h2 class="mb-3 text-sm font-semibold tracking-wide text-blue-100/70 uppercase">Weight progress</h2>
+
+  {
+    exercises.length === 0 ? (
+      <p class="rounded-lg border border-white/10 bg-white/5 px-3 py-4 text-center text-sm text-blue-100/50">
+        No logged workouts yet. Log a few sessions to see your weight progress.
+      </p>
+    ) : (
+      <ul class="space-y-3">
+        {exercises.map((exercise) => (
+          <li class="rounded-xl border border-white/10 bg-white/5 p-4">
+            <div class="mb-2 flex items-baseline justify-between gap-3">
+              <span class="text-sm font-medium text-white">{exercise.exerciseName}</span>
+              <span class="shrink-0 text-sm text-blue-100/60">@ {exercise.latestWeight} kg</span>
+            </div>
+            <Sparkline weights={exercise.points.map((point) => point.weight)} />
+            {exercise.points.length === 1 && (
+              <p class="mt-2 text-xs text-blue-100/50">Log more sessions to see a trend.</p>
+            )}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>
