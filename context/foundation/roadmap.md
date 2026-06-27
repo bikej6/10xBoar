@@ -3,7 +3,7 @@ project: "10xBoar"
 version: 1
 status: draft
 created: 2026-06-14
-updated: 2026-06-23
+updated: 2026-06-27
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -32,7 +32,7 @@ top_blocker: time
 | F-01 | seed-exercise-catalog    | (foundation) wbudowany katalog ćwiczeń per partia mięśniowa jest zasiany | —                | FR-001                | done     |
 | S-01 | log-a-workout            | zalogować trening (ćwiczenie + serie + ciężar) w < 1 min, prywatnie      | F-01             | FR-003                | done     |
 | S-02 | plan-future-workout      | ręcznie zaplanować trening na przyszły dzień                             | F-01, S-01       | FR-004                | done |
-| S-03 | history-based-proposal   | dostać propozycję treningu z własnej historii i przyjąć ją jako plan     | F-01, S-01, S-02 | US-01, FR-005         | blocked  |
+| S-03 | history-based-proposal   | dostać propozycję treningu z własnej historii i przyjąć ją jako plan     | F-01, S-01, S-02 | US-01, FR-005         | done     |
 | S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | proposed |
 | S-05 | workout-calendar         | zobaczyć kalendarz z dniami treningowymi i szczegóły treningu po kliknięciu dnia | S-01     | FR-003 (odczyt) · nowy | proposed |
 | S-06 | edit-workout             | edytować zapisany trening (z widoku szczegółów)                          | S-01, S-05       | nowy (rozszerza zakres) | proposed |
@@ -113,7 +113,7 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
   - Jaka minimalna liczba zalogowanych sesji jest wymagana, zanim aplikacja wygeneruje sensowną propozycję? — Owner: user. Block: yes.
   - Jak zachować się przy braku historii dla danej partii (empty-state z Acceptance Criteria US-01)? — Owner: user. Block: no.
 - **Risk:** Gwiazda przewodnia — udowadnia wyróżnik produktu. Zablokowana, bo propozycja z zerową/zbyt małą historią szkodzi zaufaniu (Otwarte pytanie). Sekwencjonowana na końcu ścieżki krytycznej, bo wymaga realnych danych z S-01 i trybu planu z S-02.
-- **Status:** blocked
+- **Status:** done
 
 ### S-04: Statystyki progresu ciężaru
 
@@ -184,3 +184,4 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **F-01: (foundation) wbudowany katalog ćwiczeń z przypisaniem do partii mięśniowych jest zasiany i odpytywalny; brak UI własnego po stronie użytkownika.** — Archived 2026-06-19 → `context/archive/2026-06-16-seed-exercise-catalog/`. Lesson: —.
 - **S-01: użytkownik może zalogować trening (ćwiczenie z katalogu + liczba serii + ciężar) dla danego dnia w < 1 min, a dane są trwałe i widoczne wyłącznie dla niego.** — Archived 2026-06-23 → `context/archive/2026-06-19-log-a-workout/`. Lesson: —.
 - **S-02: użytkownik może ręcznie zaplanować trening (ćwiczenia z katalogu) na wybrany przyszły dzień.** — Archived 2026-06-23 → `context/archive/2026-06-22-plan-future-workout/`. Lesson: —.
+- **S-03: użytkownik może poprosić o propozycję treningu na wybraną partię mięśniową i docelowy dzień, zobaczyć plan oparty na własnej historii, a następnie przyjąć go jako zaplanowany trening lub zignorować.** — Archived 2026-06-27 → `context/archive/2026-06-26-history-based-proposal/`. Lesson: —.

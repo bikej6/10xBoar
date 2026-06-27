@@ -1,10 +1,10 @@
 ---
 change_id: history-based-proposal
 title: History based proposal
-status: impl_reviewed
+status: archived
 created: 2026-06-26
 updated: 2026-06-27
-archived_at: null
+archived_at: 2026-06-27T11:46:09Z
 ---
 
 ## Notes
