@@ -1,0 +1,41 @@
+---
+import { sparklineGeometry } from "@/lib/stats";
+
+interface Props {
+  weights: number[];
+}
+
+const { weights } = Astro.props;
+
+// Fixed coordinate space; the SVG stretches to its container width.
+const WIDTH = 100;
+const HEIGHT = 30;
+
+const { points, lastX, lastY } = sparklineGeometry(weights, WIDTH, HEIGHT);
+const singlePoint = weights.length === 1;
+---
+
+<svg
+  viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+  width="100%"
+  height="40"
+  preserveAspectRatio="none"
+  role="img"
+  aria-hidden="true"
+  class="text-blue-300"
+>
+  {
+    !singlePoint && (
+      <polyline
+        points={points}
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        vector-effect="non-scaling-stroke"
+      />
+    )
+  }
+  <circle cx={lastX} cy={lastY} r="2" fill="currentColor" vector-effect="non-scaling-stroke"></circle>
+</svg>
