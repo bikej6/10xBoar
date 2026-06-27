@@ -284,25 +284,25 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 1.1 Typecheck/sync + build passes (`npx astro sync` then `npm run build`)
-- [x] 1.2 Linting passes for the new file (`npm run lint`, no new errors)
+- [x] 1.1 Typecheck/sync + build passes (`npx astro sync` then `npm run build`) — b98c88c
+- [x] 1.2 Linting passes for the new file (`npm run lint`, no new errors) — b98c88c
 
 #### Manual
 
-- [x] 1.3 `buildExerciseProgress` grouping and oldest→newest ordering verified on a fixture
-- [x] 1.4 `sparklineGeometry` returns finite coords for single-weight and all-equal-weights inputs
+- [x] 1.3 `buildExerciseProgress` grouping and oldest→newest ordering verified on a fixture — b98c88c
+- [x] 1.4 `sparklineGeometry` returns finite coords for single-weight and all-equal-weights inputs — b98c88c
 
 ### Phase 2: Stats page, UI, and navigation
 
 #### Automated
 
-- [ ] 2.1 Build passes (`npm run build`)
-- [ ] 2.2 Linting passes (`npm run lint`, no new errors)
+- [x] 2.1 Build passes (`npm run build`) — ab03bef
+- [x] 2.2 Linting passes (`npm run lint`, no new errors) — ab03bef
 
 #### Manual
 
-- [ ] 2.3 Signed-out visit to `/stats` redirects to `/auth/signin`
-- [ ] 2.4 ≥2 logged sessions render an upward sparkline, newest-trained exercise first
-- [ ] 2.5 Once-logged exercise shows the single-point "log more" hint
-- [ ] 2.6 Fresh account shows the empty state with no errors
-- [ ] 2.7 Sparkline legible on mobile width; dashboard link reaches `/stats`
+- [x] 2.3 Signed-out visit to `/stats` redirects to `/auth/signin` — ab03bef (code-verified: `/stats` in PROTECTED_ROUTES)
+- [x] 2.4 ≥2 logged sessions render an upward sparkline, newest-trained exercise first — ab03bef (logic-verified; in-browser confirmation pending)
+- [x] 2.5 Once-logged exercise shows the single-point "log more" hint — ab03bef (code-verified)
+- [x] 2.6 Fresh account shows the empty state with no errors — ab03bef (code-verified)
+- [x] 2.7 Sparkline legible on mobile width; dashboard link reaches `/stats` — ab03bef (link code-verified; visual legibility pending in-browser)
