@@ -1,0 +1,27 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import WorkoutCalendar from "@/components/workouts/WorkoutCalendar";
+import { createClient } from "@/lib/supabase";
+import { getAllWorkouts } from "@/lib/workouts";
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+const { user } = Astro.locals;
+const workouts = user ? await getAllWorkouts(supabase, user.id) : [];
+---
+
+<Layout title="Workout calendar">
+  <div class="bg-cosmic flex min-h-screen items-start justify-center p-4 py-10">
+    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
+      <h1
+        class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-2xl font-bold text-transparent"
+      >
+        Workout calendar
+      </h1>
+      <WorkoutCalendar workouts={workouts} client:load />
+      <p class="mt-4 text-center text-sm text-blue-100/60">
+        <a href="/dashboard" class="text-purple-300 hover:underline">Back to dashboard</a>
+      </p>
+    </div>
+  </div>
+</Layout>

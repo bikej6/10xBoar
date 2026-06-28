@@ -180,6 +180,35 @@ export async function getRecentWorkouts(
 }
 
 /**
+ * All of the caller's workouts — both `logged` and `planned`, uncapped — ordered
+ * by `workout_date` ascending (then `created_at` ascending) for determinism. The
+ * calendar view (S-05) holds the full dataset client-side and regroups it by date,
+ * so order is non-critical; ascending is chosen for stable output. Unlike
+ * `getRecentWorkouts`, there is no `limit` and no `status` filter. RLS scopes rows
+ * to the caller; the explicit `user_id` filter keeps the intent clear. Returns `[]`
+ * on a null client or query error.
+ */
+export async function getAllWorkouts(supabase: WorkoutClient | null, userId: string): Promise<LoggedWorkout[]> {
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("workouts")
+    .select(WORKOUT_SELECT)
+    .eq("user_id", userId)
+    .order("workout_date", { ascending: true })
+    .order("created_at", { ascending: true })
+    .overrideTypes<RecentWorkoutRow[], { merge: false }>();
+
+  if (error) {
+    return [];
+  }
+
+  return data.map(mapWorkoutRow);
+}
+
+/**
  * The caller's planned (future) workouts, soonest upcoming first
  * (`workout_date` asc, then `created_at` asc), with their exercises and
  * resolved catalog names. Mirrors `getRecentWorkouts` but filtered to
