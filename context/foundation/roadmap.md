@@ -3,7 +3,7 @@ project: "10xBoar"
 version: 1
 status: draft
 created: 2026-06-14
-updated: 2026-06-27
+updated: 2026-06-28
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -34,7 +34,7 @@ top_blocker: time
 | S-02 | plan-future-workout      | ręcznie zaplanować trening na przyszły dzień                             | F-01, S-01       | FR-004                | done |
 | S-03 | history-based-proposal   | dostać propozycję treningu z własnej historii i przyjąć ją jako plan     | F-01, S-01, S-02 | US-01, FR-005         | done     |
 | S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | done |
-| S-05 | workout-calendar         | zobaczyć kalendarz z dniami treningowymi i szczegóły treningu po kliknięciu dnia | S-01     | FR-003 (odczyt) · nowy | proposed |
+| S-05 | workout-calendar         | zobaczyć kalendarz z dniami treningowymi i szczegóły treningu po kliknięciu dnia | S-01     | FR-003 (odczyt) · nowy | done |
 | S-06 | edit-workout             | edytować zapisany trening (z widoku szczegółów)                          | S-01, S-05       | nowy (rozszerza zakres) | proposed |
 
 ## Streams
@@ -139,7 +139,7 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
   - Zakres widoku (miesiąc vs tydzień) i sposób oznaczania dni z treningiem. — Owner: user. Block: no.
   - Strefa czasowa dla przypisania treningu do dnia (UTC zegara Workers vs lokalny dzień użytkownika — patrz F2 z S-01). — Owner: user. Block: no.
 - **Risk:** Widok tylko-do-odczytu nad historią z S-01; niezależny od ścieżki krytycznej (jak S-04), może iść równolegle. Ryzyko niskie. Reużywa helpera odczytu z S-01 zamiast odpytywać Supabase ad hoc.
-- **Status:** proposed
+- **Status:** done
 
 ### S-06: Edycja treningu
 
@@ -186,3 +186,4 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **S-02: użytkownik może ręcznie zaplanować trening (ćwiczenia z katalogu) na wybrany przyszły dzień.** — Archived 2026-06-23 → `context/archive/2026-06-22-plan-future-workout/`. Lesson: —.
 - **S-03: użytkownik może poprosić o propozycję treningu na wybraną partię mięśniową i docelowy dzień, zobaczyć plan oparty na własnej historii, a następnie przyjąć go jako zaplanowany trening lub zignorować.** — Archived 2026-06-27 → `context/archive/2026-06-26-history-based-proposal/`. Lesson: —.
 - **S-04: użytkownik może zobaczyć statystyki/wykres progresu ciężaru dla każdego ćwiczenia.** — Archived 2026-06-27 → `context/archive/2026-06-27-weight-progress-stats/`. Lesson: —.
+- **S-05: użytkownik widzi kalendarz z oznaczonymi dniami, w których ma zapisany trening, i po kliknięciu dnia widzi szczegóły treningu (ćwiczenia + serie + powtórzenia + ciężar). Tylko do odczytu.** — Archived 2026-06-28 → `context/archive/2026-06-27-workout-calendar/`. Lesson: —.
