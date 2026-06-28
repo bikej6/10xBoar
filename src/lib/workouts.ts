@@ -188,10 +188,7 @@ export async function getRecentWorkouts(
  * to the caller; the explicit `user_id` filter keeps the intent clear. Returns `[]`
  * on a null client or query error.
  */
-export async function getAllWorkouts(
-  supabase: WorkoutClient | null,
-  userId: string,
-): Promise<LoggedWorkout[]> {
+export async function getAllWorkouts(supabase: WorkoutClient | null, userId: string): Promise<LoggedWorkout[]> {
   if (!supabase) {
     return [];
   }
