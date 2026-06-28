@@ -1,10 +1,10 @@
 ---
 change_id: workout-calendar
 title: Workout calendar
-status: implemented
+status: archived
 created: 2026-06-27
-updated: 2026-06-27
-archived_at: null
+updated: 2026-06-28
+archived_at: 2026-06-28T10:36:33Z
 ---
 
 ## Notes
