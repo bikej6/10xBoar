@@ -1,13 +1,18 @@
 import { defineConfig } from "vitest/config";
+import { loadEnv } from "vite";
 import { fileURLToPath } from "node:url";
 
 // Ad-hoc integration suite: real Supabase, run on demand with
 // `npm run test:integration`. NOT part of the default `npm test` (CI) run.
-// Requires SUPABASE_URL / SUPABASE_KEY; individual tests guard on their absence.
-// Plain config (see vitest.config.ts for why getViteConfig is avoided). The
-// `astro:env/server` shim needed by the real Supabase client is added in Phase 4
-// alongside the first integration test.
-export default defineConfig({
+// Requires SUPABASE_URL / SUPABASE_KEY (anon) plus SUPABASE_TEST_EMAIL /
+// SUPABASE_TEST_PASSWORD for a pre-created, email-confirmed test user; the whole
+// suite skips when any are absent (so a bare checkout can still run `npm test`).
+// Values are loaded from `.env` (all keys, no prefix filter) into process.env for
+// the tests. Plain config (see vitest.config.ts for why getViteConfig is avoided);
+// the real client is built directly from @supabase/supabase-js, so no
+// `astro:env/server` shim is needed — `@/lib/workouts` imports `@/lib/supabase`
+// type-only, which erases at runtime.
+export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -16,7 +21,8 @@ export default defineConfig({
   test: {
     include: ["src/**/*.integration.test.ts"],
     exclude: ["**/node_modules/**", "**/dist/**"],
-    // No integration tests exist until Phase 4; don't fail the ad-hoc run meanwhile.
+    env: loadEnv(mode, process.cwd(), ""),
+    // Whole suite skips when integration env is absent; don't fail the ad-hoc run.
     passWithNoTests: true,
   },
-});
+}));

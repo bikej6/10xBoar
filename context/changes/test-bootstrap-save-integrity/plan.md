@@ -324,27 +324,27 @@ No data or schema changes. New dev dependency (Vitest) and new test/config files
 
 #### Automated
 
-- [x] 3.1 Hermetic tests run under `npm test` and pass
-- [x] 3.2 Compensation test asserts the `delete` on the parent id was invoked
-- [x] 3.3 `23505` branch and generic-error branch are each covered
-- [x] 3.4 `npm run lint` passes on new files
+- [x] 3.1 Hermetic tests run under `npm test` and pass — cd0b69e
+- [x] 3.2 Compensation test asserts the `delete` on the parent id was invoked — cd0b69e
+- [x] 3.3 `23505` branch and generic-error branch are each covered — cd0b69e
+- [x] 3.4 `npm run lint` passes on new files — cd0b69e
 
 #### Manual
 
-- [ ] 3.5 Reviewer confirms the fake models the real chain faithfully
+- [x] 3.5 Reviewer confirms the fake models the real chain faithfully — cd0b69e
 
 ### Phase 4: Integration — Persistence, FK, Uniqueness (ad-hoc)
 
 #### Automated
 
-- [ ] 4.1 `npm run test:integration` passes with real Supabase env set
-- [ ] 4.2 `npm test` (default) does NOT execute the integration file
-- [ ] 4.3 Non-catalog test verifies no orphan `workouts` row remains
+- [x] 4.1 `npm run test:integration` passes with real Supabase env set
+- [x] 4.2 `npm test` (default) does NOT execute the integration file
+- [x] 4.3 Non-catalog test verifies no orphan `workouts` row remains
 
 #### Manual
 
-- [ ] 4.4 Run once against real cloud Supabase; confirm test-data cleanup
-- [ ] 4.5 Confirm the suite is genuinely optional (teammate without env can run `npm test`)
+- [x] 4.4 Run once against real cloud Supabase; confirm test-data cleanup
+- [x] 4.5 Confirm the suite is genuinely optional (teammate without env can run `npm test`)
 
 ### Phase 5: Cookbook & Test-Plan Sync
 
