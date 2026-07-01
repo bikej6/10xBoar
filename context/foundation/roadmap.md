@@ -36,6 +36,7 @@ top_blocker: time
 | S-04 | weight-progress-stats    | zobaczyć statystyki progresu ciężaru dla każdego ćwiczenia               | S-01             | FR-006                | done |
 | S-05 | workout-calendar         | zobaczyć kalendarz z dniami treningowymi i szczegóły treningu po kliknięciu dnia | S-01     | FR-003 (odczyt) · nowy | done |
 | S-06 | edit-workout             | edytować zapisany trening (z widoku szczegółów)                          | S-01, S-05       | nowy (rozszerza zakres) | proposed |
+| S-07 | delete-workout           | usunąć trening (przeszły lub przyszły) z widoku szczegółów               | S-01, S-05       | nowy (rozszerza zakres) | proposed |
 
 ## Streams
 
@@ -45,7 +46,7 @@ Pomoc nawigacyjna — grupuje elementy dzielące łańcuch warunków wstępnych.
 | ------ | ------------------------------ | -------------------------------------- | ------------------------------------------------------------------ |
 | A      | Rdzeń: rejestracja → propozycja | `F-01` → `S-01` → `S-02` → `S-03`     | Ścieżka krytyczna do gwiazdy przewodniej; zgodna z celem `speed`.  |
 | B      | Wgląd w postępy                | `S-04`                                 | Odgałęzia się od Stream A na `S-01`; równoległy do S-02/S-03.       |
-| C      | Historia i edycja              | `S-01` → `S-05` → `S-06`               | Odgałęzia się od Stream A na `S-01`; drugorzędny, poza ścieżką krytyczną. |
+| C      | Historia i edycja              | `S-01` → `S-05` → `S-06`, `S-07`       | Odgałęzia się od Stream A na `S-01`; drugorzędny, poza ścieżką krytyczną. `S-06` i `S-07` odgałęziają się równolegle od `S-05` (wejście z widoku szczegółów). |
 
 ## Baseline
 
@@ -155,6 +156,20 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 - **Risk:** Odwraca decyzję S-01 (brak edycji). Wymaga **nowej migracji: polityka RLS UPDATE na `workouts`** keyed to `auth.uid()` (dziś istnieją tylko SELECT/INSERT/DELETE), a edycja wierszy ćwiczeń idzie przez własność tranzytywną (`workout_exercises` ma już politykę `for all`). Ryzyko: spójność przy edycji wielu dzieci (insert/update/delete ćwiczeń w jednej sesji) — bez transakcji po stronie PostgREST, jak w F1 z S-01.
 - **Status:** proposed
 
+### S-07: Usuwanie treningu
+
+- **Outcome:** użytkownik może usunąć zapisany trening — zarówno przeszły (zalogowany), jak i przyszły (zaplanowany) — z widoku szczegółów dnia; po usunięciu trening znika z kalendarza, historii i statystyk, a operacja dotyczy wyłącznie własnych danych.
+- **Change ID:** delete-workout
+- **PRD refs:** brak — **rozszerza zakres poza pierwotny Non-Goal S-01** ("brak edycji/usuwania treningów"); wymaga potwierdzenia w PRD przed implementacją.
+- **Prerequisites:** S-01 (schemat + dane), S-05 (wejście w usuwanie z widoku szczegółów)
+- **Parallel with:** S-06 (oba odgałęziają się od S-05; edycja i usuwanie dzielą ten sam punkt wejścia)
+- **Blockers:** —
+- **Unknowns:**
+  - Czy usuwanie wymaga potwierdzenia (dialog "na pewno?") przed wykonaniem? — Owner: user. Block: no.
+  - Czy usuwanie zaplanowanego (przyszłego) i zalogowanego (przeszłego) treningu dzieli tę samą ścieżkę, czy różni się komunikatem? — Owner: user. Block: no.
+- **Risk:** Domyka CRUD dla encji `workouts` (Delete jest dziś tylko wewnętrzną kompensacją w `createWorkout`, nie akcją użytkownika). Polityka **RLS DELETE na `workouts`** keyed to `auth.uid()` już istnieje (używa jej kompensujący `delete` z S-01), więc slice nie wymaga nowej polityki — do zweryfikowania przy planowaniu pozostaje kaskadowe usunięcie wierszy `workout_exercises` (FK `on delete cascade` vs jawne usunięcie dzieci przed rodzicem). Ryzyko: przypadkowe/nieodwracalne usunięcie — stąd rozważ potwierdzenie w UI.
+- **Status:** proposed
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                | Suggested issue title                              | Ready for `/10x-plan` | Notes |
@@ -166,6 +181,7 @@ Fundamenty poniżej zakładają, że to istnieje, i NIE budują tego ponownie.
 | S-04       | weight-progress-stats    | Statystyki progresu ciężaru per ćwiczenie          | no                    | Wymaga S-01 |
 | S-05       | workout-calendar         | Kalendarz historii treningów z podglądem dnia      | no                    | Wymaga S-01 (po merge) |
 | S-06       | edit-workout             | Edycja zapisanego treningu                         | no                    | Wymaga S-01, S-05; rozszerza zakres PRD (potwierdzić) |
+| S-07       | delete-workout           | Usuwanie treningu (przeszłego i przyszłego)        | no                    | Wymaga S-01, S-05; rozszerza zakres PRD (potwierdzić); domyka CRUD |
 
 ## Open Roadmap Questions
 
