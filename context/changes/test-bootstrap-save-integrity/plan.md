@@ -311,23 +311,23 @@ No data or schema changes. New dev dependency (Vitest) and new test/config files
 
 #### Automated
 
-- [x] 2.1 New unit tests run under `npm test` and pass
-- [x] 2.2 Parameterised cases cover weight (neg/zero/pos), sets, reps, exerciseId, empty/malformed payload
-- [x] 2.3 Date cases cover log (≤ today+1), plan (≥ today), bad format, empty
-- [x] 2.4 `npm run lint` passes on the new test file
+- [x] 2.1 New unit tests run under `npm test` and pass — ae0261f
+- [x] 2.2 Parameterised cases cover weight (neg/zero/pos), sets, reps, exerciseId, empty/malformed payload — ae0261f
+- [x] 2.3 Date cases cover log (≤ today+1), plan (≥ today), bad format, empty — ae0261f
+- [x] 2.4 `npm run lint` passes on the new test file — ae0261f
 
 #### Manual
 
-- [x] 2.5 Reviewer confirms assertions derive from the oracle, not from the implementation (no mirror tests)
+- [x] 2.5 Reviewer confirms assertions derive from the oracle, not from the implementation (no mirror tests) — ae0261f
 
 ### Phase 3: Hermetic — Save Compensation
 
 #### Automated
 
-- [ ] 3.1 Hermetic tests run under `npm test` and pass
-- [ ] 3.2 Compensation test asserts the `delete` on the parent id was invoked
-- [ ] 3.3 `23505` branch and generic-error branch are each covered
-- [ ] 3.4 `npm run lint` passes on new files
+- [x] 3.1 Hermetic tests run under `npm test` and pass
+- [x] 3.2 Compensation test asserts the `delete` on the parent id was invoked
+- [x] 3.3 `23505` branch and generic-error branch are each covered
+- [x] 3.4 `npm run lint` passes on new files
 
 #### Manual
 
