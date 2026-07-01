@@ -9,6 +9,7 @@ import type { WorkoutExerciseInput } from "@/lib/workouts";
  */
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** ISO `YYYY-MM-DD` for the current UTC day. */
 export function todayUtcIso(): string {
@@ -21,6 +22,39 @@ export function parseIsoDate(value: string): number {
     return Number.NaN;
   }
   return Date.parse(`${value}T00:00:00Z`);
+}
+
+/**
+ * Logging rule: accept unless the date is clearly in the future — beyond
+ * today (UTC) + 1 day. The one-day grace avoids falsely rejecting a valid local
+ * "today" for users in positive-UTC offsets, since the Workers clock is UTC
+ * while the date input defaults to the browser's local today. `todayIso` is
+ * injectable for deterministic testing; production callers omit it.
+ */
+export function isAcceptableLogDate(value: string, todayIso: string = todayUtcIso()): boolean {
+  const submitted = parseIsoDate(value);
+  if (Number.isNaN(submitted)) {
+    return false;
+  }
+  const today = Date.parse(`${todayIso}T00:00:00Z`);
+  return submitted <= today + DAY_MS;
+}
+
+/**
+ * Planning rule: accept dates that are not strictly in the past (UTC). The form
+ * enforces the strict "tomorrow onward" UX via `min`; the server allows
+ * `submitted >= today (UTC)` so a *behind*-UTC user (e.g. UTC−8) whose genuine
+ * local "tomorrow" still reads as today in UTC isn't falsely rejected. Mirror of
+ * the +1-day grace on the logging route, flipped. `todayIso` is injectable for
+ * deterministic testing; production callers omit it.
+ */
+export function isPlannableDate(value: string, todayIso: string = todayUtcIso()): boolean {
+  const submitted = parseIsoDate(value);
+  if (Number.isNaN(submitted)) {
+    return false;
+  }
+  const today = Date.parse(`${todayIso}T00:00:00Z`);
+  return submitted >= today;
 }
 
 /** Validate one submitted exercise row into a typed input, or an error string. */
