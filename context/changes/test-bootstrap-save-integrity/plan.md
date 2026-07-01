@@ -298,27 +298,27 @@ No data or schema changes. New dev dependency (Vitest) and new test/config files
 
 #### Automated
 
-- [x] 1.1 `npm test` runs Vitest and passes the smoke test
-- [x] 1.2 `@/`-aliased import resolves inside a test
-- [x] 1.3 `npm run test:integration` is distinct and excluded from `npm test`
-- [x] 1.4 `npm run lint` passes on new files
+- [x] 1.1 `npm test` runs Vitest and passes the smoke test — 2a9d289
+- [x] 1.2 `@/`-aliased import resolves inside a test — 2a9d289
+- [x] 1.3 `npm run test:integration` is distinct and excluded from `npm test` — 2a9d289
+- [x] 1.4 `npm run lint` passes on new files — 2a9d289
 
 #### Manual
 
-- [x] 1.5 `npm test` completes fast with no external infra/env present
+- [x] 1.5 `npm test` completes fast with no external infra/env present — 2a9d289
 
 ### Phase 2: Unit — Validation & Dates
 
 #### Automated
 
-- [ ] 2.1 New unit tests run under `npm test` and pass
-- [ ] 2.2 Parameterised cases cover weight (neg/zero/pos), sets, reps, exerciseId, empty/malformed payload
-- [ ] 2.3 Date cases cover log (≤ today+1), plan (≥ today), bad format, empty
-- [ ] 2.4 `npm run lint` passes on the new test file
+- [x] 2.1 New unit tests run under `npm test` and pass
+- [x] 2.2 Parameterised cases cover weight (neg/zero/pos), sets, reps, exerciseId, empty/malformed payload
+- [x] 2.3 Date cases cover log (≤ today+1), plan (≥ today), bad format, empty
+- [x] 2.4 `npm run lint` passes on the new test file
 
 #### Manual
 
-- [ ] 2.5 Reviewer confirms assertions derive from the oracle, not from the implementation (no mirror tests)
+- [x] 2.5 Reviewer confirms assertions derive from the oracle, not from the implementation (no mirror tests)
 
 ### Phase 3: Hermetic — Save Compensation
 

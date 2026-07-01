@@ -1,24 +1,7 @@
 import type { APIRoute } from "astro";
 import { createClient } from "@/lib/supabase";
 import { createWorkout } from "@/lib/workouts";
-import { parseExercisesField, parseIsoDate, todayUtcIso } from "@/lib/workout-submission";
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-/**
- * Reject only when the date is clearly in the future — beyond today (UTC) + 1
- * day. The one-day grace (F2) avoids falsely rejecting a valid local "today"
- * for users in positive-UTC offsets, since the Workers clock is UTC while the
- * date input defaults to the browser's local today.
- */
-function isAcceptableDate(value: string): boolean {
-  const submitted = parseIsoDate(value);
-  if (Number.isNaN(submitted)) {
-    return false;
-  }
-  const today = Date.parse(`${todayUtcIso()}T00:00:00Z`);
-  return submitted <= today + DAY_MS;
-}
+import { isAcceptableLogDate, parseExercisesField, todayUtcIso } from "@/lib/workout-submission";
 
 function redirectError(context: Parameters<APIRoute>[0], message: string) {
   return context.redirect(`/workouts?error=${encodeURIComponent(message)}`);
@@ -40,7 +23,7 @@ export const POST: APIRoute = async (context) => {
   const rawDate = (form.get("workout_date") as string | null)?.trim();
   const workoutDate = rawDate && rawDate.length > 0 ? rawDate : todayUtcIso();
 
-  if (!isAcceptableDate(workoutDate)) {
+  if (!isAcceptableLogDate(workoutDate)) {
     return redirectError(context, "Pick a date that is not in the future.");
   }
 
