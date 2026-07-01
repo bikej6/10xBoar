@@ -353,9 +353,9 @@ No data or schema changes. New dev dependency (Vitest) and new test/config files
 
 #### Automated
 
-- [x] 5.1 §6.1/§6.2/§6.4 no longer contain "TBD"
-- [x] 5.2 §3 Phase 1 Status shows `complete` and references the change folder
+- [x] 5.1 §6.1/§6.2/§6.4 no longer contain "TBD" — 0fc93e5
+- [x] 5.2 §3 Phase 1 Status shows `complete` and references the change folder — 0fc93e5
 
 #### Manual
 
-- [x] 5.3 Reviewer confirms cookbook entries are accurate to the shipped tests
+- [x] 5.3 Reviewer confirms cookbook entries are accurate to the shipped tests — 0fc93e5
