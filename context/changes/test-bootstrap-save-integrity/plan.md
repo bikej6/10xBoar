@@ -38,7 +38,7 @@ Four test layers by cost, then a docs-sync phase. Unit and hermetic layers need 
 
 ## Critical Implementation Details
 
-- **`astro:env/server` in tests.** Using `getViteConfig()` loads Astro's env plumbing so imports resolve; the SUPABASE_* fields are `optional: true`, so unit/hermetic tests that never build a real client need no env. Integration tests require real `SUPABASE_URL`/`SUPABASE_KEY` to be present or they must not run under `npm test`.
+- **`astro:env/server` in tests.** Using `getViteConfig()` loads Astro's env plumbing so imports resolve; the SUPABASE\_\* fields are `optional: true`, so unit/hermetic tests that never build a real client need no env. Integration tests require real `SUPABASE_URL`/`SUPABASE_KEY` to be present or they must not run under `npm test`.
 - **Stub must model the fluent chain.** `createWorkout` calls `supabase.from("workouts").insert(...).select("id").single()` then `supabase.from("workout_exercises").insert(...)` then `supabase.from("workouts").delete().eq("id", …)`. The fake must let each `(table, op)` return a configured `{ data, error }` and record that the `delete().eq()` fired — otherwise the compensation assertion can't be made.
 - **Integration ordering.** The non-catalog-id test doubles as a Risk #2 assertion: after the FK rejection, query `workouts` and assert **no orphan row** survives (the compensation ran).
 
@@ -114,6 +114,7 @@ Cover the server-side validation boundary with pure-function tests — the cheap
 **Intent**: Pin the validation contract of `parseExerciseRow` and `parseExercisesField` against the oracle (FR-003 + resolved decisions), catching regressions that would let invalid rows persist.
 
 **Contract**: Behavioural assertions on the exported parse functions (`workout-submission.ts:27-73`), parameterised where a property has multiple inputs (use `it.each`, avoid redundant copies):
+
 - weight: `< 0` → rejected; `0` → **accepted**; finite positive → accepted; non-finite → rejected.
 - sets `< 1` rejected, `≥ 1` accepted; reps `< 1` rejected, `≥ 1` accepted.
 - exerciseId: non-integer / `≤ 0` rejected; positive int accepted (no catalog check here — that's integration).
@@ -166,6 +167,7 @@ Test the non-atomic partial-failure branch of `createWorkout` with an injected S
 **Intent**: Prove that a mid-sequence failure never yields a falsely-"saved" workout, and that compensation fires — the core Risk #2 protection.
 
 **Contract**: Using the fake (`workouts.ts:80-124`):
+
 - Child insert returns an error → `createWorkout` returns `{ ok:false, error:"Could not save the workout exercises." }` **and** a `delete().eq("id", <parentId>)` on `workouts` was recorded.
 - Parent insert returns `23505` → `{ ok:false, error:"You already have a plan for that day." }` and **no** child insert attempted.
 - Parent insert returns a generic error → `{ ok:false, error:"Could not save the workout." }`, no child insert, no delete.
@@ -201,10 +203,11 @@ Real-Supabase tests for what a stub cannot honour: actual persistence, the catal
 **Intent**: Prove the guardrail (saved workout persists) and the DB-level protections behind Risks #2/#4.
 
 **Contract**: Against a real Supabase, with per-test cleanup:
+
 - Happy path: after `createWorkout`, both the `workouts` row and all `workout_exercises` children exist and match the payload (Risk #2 positive — "available next login").
 - Non-catalog `exercise_id` (e.g. `999999`): `createWorkout` returns `{ ok:false }`, and querying `workouts` shows **no orphan** row survived (Risk #4 catalog FK + Risk #2 compensation).
 - Duplicate planned same `(user, date)`: second insert → `{ ok:false, error:"You already have a plan for that day." }` (`23505`, partial unique index).
-- Skipped/guarded when SUPABASE_* env is absent so a bare checkout can't fail here.
+- Skipped/guarded when SUPABASE\_\* env is absent so a bare checkout can't fail here.
 
 ### Success Criteria:
 
@@ -337,22 +340,22 @@ No data or schema changes. New dev dependency (Vitest) and new test/config files
 
 #### Automated
 
-- [x] 4.1 `npm run test:integration` passes with real Supabase env set
-- [x] 4.2 `npm test` (default) does NOT execute the integration file
-- [x] 4.3 Non-catalog test verifies no orphan `workouts` row remains
+- [x] 4.1 `npm run test:integration` passes with real Supabase env set — b23b40a
+- [x] 4.2 `npm test` (default) does NOT execute the integration file — b23b40a
+- [x] 4.3 Non-catalog test verifies no orphan `workouts` row remains — b23b40a
 
 #### Manual
 
-- [x] 4.4 Run once against real cloud Supabase; confirm test-data cleanup
-- [x] 4.5 Confirm the suite is genuinely optional (teammate without env can run `npm test`)
+- [x] 4.4 Run once against real cloud Supabase; confirm test-data cleanup — b23b40a
+- [x] 4.5 Confirm the suite is genuinely optional (teammate without env can run `npm test`) — b23b40a
 
 ### Phase 5: Cookbook & Test-Plan Sync
 
 #### Automated
 
-- [ ] 5.1 §6.1/§6.2/§6.4 no longer contain "TBD"
-- [ ] 5.2 §3 Phase 1 Status shows `complete` and references the change folder
+- [x] 5.1 §6.1/§6.2/§6.4 no longer contain "TBD"
+- [x] 5.2 §3 Phase 1 Status shows `complete` and references the change folder
 
 #### Manual
 
-- [ ] 5.3 Reviewer confirms cookbook entries are accurate to the shipped tests
+- [x] 5.3 Reviewer confirms cookbook entries are accurate to the shipped tests
